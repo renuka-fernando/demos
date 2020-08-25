@@ -1,0 +1,46 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: micro
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-backend
+  namespace: micro
+  labels:
+    app: products-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: products-backend
+  template:
+    metadata:
+      labels:
+        name: products-backend
+    spec:
+      containers:
+        - name: products-backend
+          # Replace this with the built image name
+          image: renukafernando/k8s-prometheu-metrics-sample:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: main-port
+            containerPort: 8080
+            protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-backend
+  namespace: micro
+spec:
+  selector:
+    app: products-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

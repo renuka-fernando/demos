@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: Products-1-API
+  version: v1
+  description: This API contains operations related to online shopping store.
+x-wso2-basePath: /products_1/{version}
+x-wso2-production-endpoints:
+  urls:
+    - http://products-backend.micro
+x-wso2-mode: privateJet
+paths:
+  /products:
+    get:
+      responses:
+        "200":
+          description: ""
+
+  /products/{productId}:
+    get:
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""

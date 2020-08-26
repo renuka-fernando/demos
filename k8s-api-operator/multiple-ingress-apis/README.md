@@ -71,29 +71,38 @@ ADDRESS=<ADDRESS>
 
 ##### Invoke API with Default Security
 ```sh
-curl "https://${ADDRESS}/products_1/v1/products" \
+for i in {1..4}
+do
+curl "https://${ADDRESS}/products_${i}/v1/products" \
         -X GET \
         -H "Host:mgw.ingress.wso2.com" \
         -H "Authorization:Bearer $DEFAULT_TOKEN" \
         -k
+done
 ```
 
 ##### Invoke API with JWT Security
 ```sh
-curl "https://${ADDRESS}/products_5/v1/products" \
+for i in {5..7}
+do
+curl "https://${ADDRESS}/products_${i}/v1/products" \
         -X GET \
         -H "Host:mgw.ingress.wso2.com" \
         -H "Authorization:Bearer $JWT_TOKEN" \
         -k
+done
 ```
 
 ##### Invoke API with Basic Auth
 ```sh
-curl "https://${ADDRESS}/products_8/v1/products" \
+for i in {8..10}
+do
+curl "https://${ADDRESS}/products_${i}/v1/products" \
         -X GET \
         -H "Host:mgw.ingress.wso2.com" \
         -H "Authorization:Basic $BASIC" \
         -k
+done
 ```
 
 #### Clean Up

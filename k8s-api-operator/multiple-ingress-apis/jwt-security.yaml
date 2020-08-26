@@ -17,7 +17,7 @@ spec:
   # Security - JWT
   type: JWT
   securityConfig:
-    - issuer: https://products/oauth2/token
+    - issuer: https://products.com/oauth2/token
       #create secret with certificate and add secret name
       certificate: products-jwt-secret
       validateSubscription: false

@@ -1,0 +1,28 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: micro
+---
+
+apiVersion: wso2.com/v1alpha1
+kind: TargetEndpoint
+metadata:
+  name: products-backend
+  namespace: micro
+  labels:
+    app: products-backend
+spec:
+  applicationProtocol: http
+  ports:
+    - name: http-products
+      port: 80
+      targetPort: 8080
+  deploy:
+    name: products-backend
+    dockerImage: renukafernando/k8s-prometheu-metrics-sample:v1.0.0
+    minReplicas: 1
+    maxReplicas: 6
+    requestCPU: "150m"
+    reqMemory: "128Mi"
+    cpuLimit: "300m"
+  mode: privateJet

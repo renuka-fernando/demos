@@ -6,7 +6,7 @@ info:
 x-wso2-basePath: /products_1/{version}
 x-wso2-production-endpoints:
   urls:
-    - http://products-backend.micro
+    - products-backend.micro
 x-wso2-mode: privateJet
 paths:
   /products:

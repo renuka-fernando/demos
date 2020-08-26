@@ -38,6 +38,7 @@ metadata:
   name: products-backend
   namespace: micro
 spec:
+  type: NodePort
   selector:
     app: products-backend
   ports:

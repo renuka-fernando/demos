@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: products-basic-secret
+  namespace: wso2-demo
+type: Opaque
+data:
+  # username = renuka, password = admin
+  username: cmVudWth
+  password: YWRtaW4=
+---
+
+apiVersion: wso2.com/v1alpha1
+kind: Security
+metadata:
+  name: products-basic
+  namespace: wso2-demo
+spec:
+  # Security - Basic
+  type: basic
+  securityConfig:
+    - credentials: products-basic-secret

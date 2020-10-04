@@ -190,7 +190,7 @@ data:
     - type: Pods
       pods:
         metric:
-          name: products_http_requests_total_per_second
+          name: backend_http_requests_total_per_second
         target:
           type: AverageValue
           averageValue: 2

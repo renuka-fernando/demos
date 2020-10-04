@@ -19,7 +19,7 @@ kind: TargetEndpoint
 metadata:
   name: orders-ms
   labels:
-    app: orders-backend
+    app: orders-ms
 spec:
   applicationProtocol: http
   ports:
@@ -27,8 +27,8 @@ spec:
       port: 80
       targetPort: 8080
   deploy:
-    name: orders-ms
-    dockerImage: renukafernando/k8s-prometheu-metrics-order-sample:v1.0.0
+    name: orders-backend
+    dockerImage: renukafernando/k8s-prometheu-metrics-order-sample:v1.0.1
     minReplicas: 1
     maxReplicas: 6
     requestCPU: "150m"

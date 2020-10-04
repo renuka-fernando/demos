@@ -14,24 +14,34 @@
 # specific language governing permissions and limitations
 # under the License.
 
-apiVersion: wso2.com/v1alpha1
-kind: TargetEndpoint
-metadata:
-  name: products-privatejet
-  labels:
-    app: products-backend
-spec:
-  applicationProtocol: http
-  ports:
-    - name: http-products
-      port: 80
-      targetPort: 8080
-  deploy:
-    name: products-pj-service
-    dockerImage: renukafernando/k8s-prometheu-metrics-sample:v1.0.0
-    minReplicas: 1
-    maxReplicas: 6
-    requestCPU: "150m"
-    reqMemory: "128Mi"
-    cpuLimit: "300m"
-  mode: privateJet
+openapi: 3.0.0
+info:
+  title: ABC-Products
+  version: v1
+  description: This API contains operations related to ABC products.
+x-wso2-basePath: /abcproducts/api/{version}
+x-wso2-production-endpoints:
+  urls:
+    - products-ms
+x-wso2-mode: privateJet
+paths:
+  /products:
+    get:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+
+  /products/{productId}:
+    get:
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""

@@ -54,7 +54,7 @@ data:
   #Default->  generatekubernbetesartifactsformgw: "true"
   generatekubernbetesartifactsformgw: "true"
   #Available modes - ingress, default , route and clusterIP, istio
-  operatorMode: "default"
+  operatorMode: "ingress"
   #Expose custom metrics. Default-> observabilityEnabled: "false"
   observabilityEnabled: "true"
 
@@ -174,7 +174,7 @@ data:
           name: http_requests_total_value_per_second
         target:
           type: AverageValue
-          averageValue: 10
+          averageValue: 4
 
   # Horizontal Pod Auto-Scaling for Target-Endpoints
   # Maximum number of replicas for the Horizontal Pod Auto-scale. Default->  maxReplicas: "5"
@@ -193,7 +193,7 @@ data:
           name: products_http_requests_total_per_second
         target:
           type: AverageValue
-          averageValue: 5
+          averageValue: 2
 
   # HPA version. For custom metrics HPA version should be v2beta2. Default-> v2beta1
   hpaVersion: "v2beta2"

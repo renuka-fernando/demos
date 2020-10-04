@@ -17,12 +17,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: products-mgw
+  name: abc-shopping-api
   labels:
-    team: products
+    team: abc-dev
 spec:
   selector:
     matchLabels:
-      app: products-api
+      app: abc-shopping-api
   endpoints:
   - port: metrics

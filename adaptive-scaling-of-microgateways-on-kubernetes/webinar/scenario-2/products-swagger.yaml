@@ -23,16 +23,21 @@ x-wso2-basePath: /abcproducts/api/{version}
 x-wso2-production-endpoints:
   urls:
     - products-ms
-x-wso2-mode: privateJet
+x-wso2-mode: sidecar
 paths:
   /products:
     get:
+      produces:
+      - "application/json"
+    post:
       consumes:
       - "application/json"
       produces:
       - "application/json"
-      responses:
-        "200":
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
 
   /products/{productId}:
     get:
@@ -42,6 +47,24 @@ paths:
           required: true
           schema:
             type: string
-      responses:
-        "200":
-          description: ""
+    put:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: "body"
+        in: "body"
+        required: true
+    delete:
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string

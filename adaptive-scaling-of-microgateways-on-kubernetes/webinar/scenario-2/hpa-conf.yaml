@@ -14,15 +14,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: abc-shopping-api
-  labels:
-    team: products
-spec:
-  selector:
-    matchLabels:
-      app: products-api
-  endpoints:
-  - port: metrics
+  name: hpa-configs
+  namespace: wso2-system
+data:
+  # Horizontal Pod Auto-Scaling for Micro-Gateways
+  # Maximum number of replicas for the Horizontal Pod Auto-scale. Default->  maxReplicas: "5"
+  mgwMaxReplicas: "5"
+  # Metrics configurations
+  mgwMetrics: |
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_total_value_per_second
+        target:
+          type: AverageValue
+          averageValue: 4
+
+  # HPA version. For custom metrics HPA version should be v2beta2. Default-> v2beta1
+  hpaVersion: "v2beta2"
+

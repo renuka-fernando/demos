@@ -9,7 +9,3 @@ apictl add api -n abc-shopping-api \
     --override
 
 apictl apply -f prometheus-service-monitors/
-
-
-# apictl delete api abc-shopping-api
-# apictl delete targetendpoint orders-ms products-ms

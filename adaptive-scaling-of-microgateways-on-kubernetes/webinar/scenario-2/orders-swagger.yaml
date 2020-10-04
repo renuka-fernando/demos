@@ -23,16 +23,12 @@ x-wso2-basePath: /abcorders/api/{version}
 x-wso2-production-endpoints:
   urls:
     - orders-ms
-x-wso2-mode: privateJet
+x-wso2-mode: sidecar
 paths:
   /orders:
     get:
-      consumes:
-      - "application/json"
       produces:
       - "application/json"
-      responses:
-        "200":
     post:
       consumes:
       - "application/json"
@@ -43,14 +39,32 @@ paths:
         name: "body"
         required: true
 
-  /orders/{productId}:
+  /orders/{orderId}:
     get:
       parameters:
-        - name: productId
+        - name: orderId
           in: path
           required: true
           schema:
             type: string
-      responses:
-        "200":
-          description: ""
+    put:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: "body"
+        in: "body"
+        required: true
+    delete:
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string

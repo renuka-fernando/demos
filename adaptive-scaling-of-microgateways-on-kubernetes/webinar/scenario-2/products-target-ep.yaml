@@ -19,16 +19,16 @@ kind: TargetEndpoint
 metadata:
   name: products-ms
   labels:
-    app: products-backend
+    app: products-ms
 spec:
   applicationProtocol: http
   ports:
     - name: http-products
-      port: 80
+      port: 8080
       targetPort: 8080
   deploy:
-    name: products-ms
-    dockerImage: renukafernando/k8s-prometheu-metrics-sample:v1.0.0
+    name: products-backend
+    dockerImage: renukafernando/k8s-prometheu-metrics-sample:v1.0.1
     minReplicas: 1
     maxReplicas: 6
     requestCPU: "150m"

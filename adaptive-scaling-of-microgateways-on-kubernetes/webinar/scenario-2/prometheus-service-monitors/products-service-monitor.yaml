@@ -17,12 +17,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: products-backend
+  name: products-api
   labels:
-    team: products
+    team: abc-dev
 spec:
   selector:
     matchLabels:
-      app: products-backend
+      app: products-api
   endpoints:
-  - port: http-products
+  - port: metrics

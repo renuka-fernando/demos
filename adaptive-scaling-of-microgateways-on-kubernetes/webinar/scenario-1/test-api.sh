@@ -7,5 +7,6 @@ TOKEN=eyJ4NXQiOiJNell4TW1Ga09HWXdNV0kwWldObU5EY3hOR1l3WW1NNFpUQTNNV0kyTkRBelpHUX
 echo "Invoking API for Products backend"
 curl -X GET "https://mgw.ingress.wso2.com/abcproducts/api/v1/products" -H "Authorization:Bearer $TOKEN" -k
 
+echo ""
 echo "Invoking API for Orders backend"
 curl -X GET "https://mgw.ingress.wso2.com/abcorders/api/v1/orders" -H "Authorization:Bearer $TOKEN" -k

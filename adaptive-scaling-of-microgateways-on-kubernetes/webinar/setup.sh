@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# setup ingress
+# Install ingress controller - enginx
 # https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke
 kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin \
   --user $(gcloud config get-value account)
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.1/deploy/static/provider/cloud/deploy.yaml
 
-# install API Operator in GCR
+# Install API Operator in GCR
 apictl install api-operator \
     --from-file api-operator-controller-artifacts-1.2.0 \
     --registry-type GCR \

@@ -25,10 +25,28 @@ data:
   mgwMaxReplicas: "5"
   # Metrics configurations
   mgwMetrics: |
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
+  # Horizontal Pod Auto-Scaling for Target-Endpoints
+  # Maximum number of replicas for the Horizontal Pod Auto-scale. Default->  maxReplicas: "5"
+  targetEndpointMaxReplicas: "5"
+  # Metrics configurations
+  targetEndpointMetrics: |
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
     - type: Pods
       pods:
         metric:
-          name: http_requests_total_value_per_second
+          name: backend_http_requests_total_per_second
         target:
           type: AverageValue
           averageValue: 2

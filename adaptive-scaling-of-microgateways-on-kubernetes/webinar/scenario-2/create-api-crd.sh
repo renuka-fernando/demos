@@ -3,14 +3,14 @@
 # Apply HPA congis
 apictl apply -f hpa-conf.yaml
 
-# API 1
+# API 1 - Products
 apictl apply -f products-target-ep.yaml
 
 apictl add api -n products-api \
     --from-file=products-swagger.yaml \
     --override
 
-# API 2
+# API 2 - Orders
 apictl apply -f orders-target-ep.yaml
 
 apictl add api -n orders-api \

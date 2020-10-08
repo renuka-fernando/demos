@@ -31,6 +31,13 @@ data:
         target:
           type: Utilization
           averageUtilization: 50
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_total_value_per_second
+        target:
+          type: AverageValue
+          averageValue: 2
 
   # Horizontal Pod Auto-Scaling for Target-Endpoints
   # Maximum number of replicas for the Horizontal Pod Auto-scale. Default->  maxReplicas: "5"
@@ -43,13 +50,6 @@ data:
         target:
           type: Utilization
           averageUtilization: 50
-    - type: Pods
-      pods:
-        metric:
-          name: backend_http_requests_total_per_second
-        target:
-          type: AverageValue
-          averageValue: 2
 
   # HPA version. For custom metrics HPA version should be v2beta2. Default-> v2beta1
   hpaVersion: "v2beta2"

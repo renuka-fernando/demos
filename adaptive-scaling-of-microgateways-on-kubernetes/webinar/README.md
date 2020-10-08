@@ -4,7 +4,7 @@
 
 ### 1. Installing API Operator and Prometheus
 
-Installing API Operator 1.2.0 in ingress mode. The following setup script also installing enginx ingress controller,
+Installing API Operator 1.2.0 in ingress mode. The following setup script also installing NGINX ingress controller,
 Prometheus and Prometheus Adapter.
 
 ```sh

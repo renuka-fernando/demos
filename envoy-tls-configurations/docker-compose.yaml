@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  # Envoy Proxy
+  envoy:
+    image: envoyproxy/envoy:v1.14.1
+    # command: -c /etc/envoy/envoy.yaml -l trace
+    command: -c /etc/envoy/envoy.yaml --component-log-level conn_handler:trace,upstream:trace,connection:trace,client:trace
+    # command: -c /etc/envoy/envoy.yaml --component-log-level router:trace,client:trace,conn_handler:trace,upstream:trace,filter:trace,connection:trace
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - ./certs:/certs
+    ports:
+      - "10000:10000"
+      - "9901:9901"
+  
+  # Backend
+  backend-products:
+    image: renukafernando/k8s-prometheu-metrics-sample:v1.0.1
+    ports:
+      - 8080:8080

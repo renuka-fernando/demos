@@ -23,7 +23,15 @@ Add ingress host `ingress.foo.com` to `/etc/hosts`
 192.168.8.132    ingress.foo.com
 ```
 
+### HTTP
+
+```sh
+curl http://ingress.foo.com/products -v
+```
+
+### HTTPS
+
 Try out in a new terminal and same working directory.
 ```sh
-curl https://ingress.foo.com:10000/products -v --cacert certs/servercert.pem
+curl http://ingress.foo.com/products -v
 ```

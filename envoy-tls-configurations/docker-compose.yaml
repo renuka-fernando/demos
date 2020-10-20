@@ -10,7 +10,8 @@ services:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
       - ./certs:/certs
     ports:
-      - "10000:10000"
+      - "80:80"
+      - "443:443"
       - "9901:9901"
   
   # Backend

@@ -5,13 +5,11 @@ services:
     image: envoyproxy/envoy:v1.14.1
     # command: -c /etc/envoy/envoy.yaml -l trace
     command: -c /etc/envoy/envoy.yaml --component-log-level conn_handler:trace,connection:trace,client:trace,upstream:trace
-    # command: -c /etc/envoy/envoy.yaml --component-log-level router:trace,client:trace,conn_handler:trace,upstream:trace,filter:trace,connection:trace
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
       - ./certs:/certs
     ports:
-      - "80:80"
-      - "443:443"
+      - "443:9443"
       - "9901:9901"
   
   # Backend HTTPS

@@ -1,0 +1,33 @@
+admin:
+  access_log_path: /tmp/admin_access.log
+  address:
+    socket_address: { address: 0.0.0.0, port_value: 9901 }
+
+static_resources:
+
+  listeners:
+  - name: https_listener
+    address:
+      socket_address: { address: 0.0.0.0, port_value: 9443 }
+    filter_chains:
+    - filters:
+      - name: envoy.tcp_proxy
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy
+          stat_prefix: tcp
+          cluster: products_https_service
+
+  clusters:
+  - name: products_https_service
+    connect_timeout: 0.25s
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: products_https_service
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: products_https_service
+                port_value: 8443

@@ -1,6 +1,6 @@
-# Envoy TLS Termination Sample
+# Envoy TLS Origination (Re-encrypt) Sample
 
-## 1. Create Certificates for Listeners
+## 1. Create Certificates for Listeners and Clusters
 
 ```sh
 ./create-certs.sh
@@ -12,16 +12,16 @@
 docker-compose up
 ```
 
-Test the backend server by directly invoking it.
-```sh
-curl http://localhost:8080/products
-```
-
 ## 3. Try out
 
 Add ingress host `ingress.foo.com` to `/etc/hosts`
 ```
-<YOUR_IP>    ingress.foo.com
+192.168.8.132    ingress.foo.com
+```
+
+Test the backend server by directly invoking it.
+```sh
+curl https://localhost:8443/products --cacert certs/products-https/clientcert.pem
 ```
 
 ### 3.1. HTTP

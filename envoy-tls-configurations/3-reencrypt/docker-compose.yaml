@@ -4,7 +4,7 @@ services:
   envoy:
     image: envoyproxy/envoy:v1.14.1
     # command: -c /etc/envoy/envoy.yaml -l trace
-    command: -c /etc/envoy/envoy.yaml --component-log-level conn_handler:trace,upstream:trace,connection:trace,client:trace
+    command: -c /etc/envoy/envoy.yaml --component-log-level conn_handler:trace,connection:trace,client:trace
     # command: -c /etc/envoy/envoy.yaml --component-log-level router:trace,client:trace,conn_handler:trace,upstream:trace,filter:trace,connection:trace
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
@@ -14,8 +14,13 @@ services:
       - "443:443"
       - "9901:9901"
   
-  # Backend
-  backend-products:
-    image: renukafernando/k8s-prometheu-metrics-sample:v1.0.1
+  # Backend HTTPS
+  products_https_service:
+    image: renukafernando/products-https:v1.0.2
     ports:
-      - 8080:8080
+      - 8443:8443
+    volumes:
+      - ./certs/products-https:/certs
+    environment:
+      - KEYSTORE_PATH=/certs/keystore.p12
+      - KEYSTORE_PASSWORD=admin1234

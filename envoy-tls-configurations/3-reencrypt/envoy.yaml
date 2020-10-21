@@ -11,6 +11,13 @@ static_resources:
           filename: /certs/servercert.pem
         private_key:
           filename: /certs/serverkey.pem
+    - name: client_cert
+      tls_certificate:
+        certificate_chain:
+          filename: /certs/products-https/clientcert.pem
+        private_key:
+          filename: /certs/products-https/clientkey.pem
+
   listeners:
   - name: http_listener
     address:
@@ -29,7 +36,7 @@ static_resources:
               domains: ["*"]
               routes:
               - match: { prefix: "/" }
-                route: { cluster: products_backend_service }
+                route: { cluster: products_https_service }
           http_filters:
           - name: envoy.filters.http.router
   - name: https_listener
@@ -49,7 +56,7 @@ static_resources:
               domains: ["*"]
               routes:
               - match: { prefix: "/" }
-                route: { cluster: products_backend_service }
+                route: { cluster: products_https_service }
           http_filters:
           - name: envoy.filters.http.router
       transport_socket:
@@ -59,17 +66,25 @@ static_resources:
           common_tls_context:
             tls_certificate_sds_secret_configs:
             - name: server_cert
+
   clusters:
-  - name: products_backend_service
+  - name: products_https_service
     connect_timeout: 0.25s
     type: STRICT_DNS
     lb_policy: ROUND_ROBIN
     load_assignment:
-      cluster_name: products_backend_service
+      cluster_name: products_https_service
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: backend-products
-                port_value: 8080
+                address: products_https_service
+                port_value: 8443
+    transport_socket:
+      name: envoy.transport_sockets.tls
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+        common_tls_context:
+          tls_certificate_sds_secret_configs:
+            - name: client_cert

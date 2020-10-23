@@ -8,15 +8,15 @@ static_resources:
     - name: server_cert
       tls_certificate:
         certificate_chain:
-          filename: /certs/servercert.pem
+          filename: /certs/server.crt
         private_key:
-          filename: /certs/serverkey.pem
+          filename: /certs/server.key
     - name: client_cert
       tls_certificate:
         certificate_chain:
-          filename: /certs/products-https/clientcert.pem
+          filename: /certs/products-https/client.crt
         private_key:
-          filename: /certs/products-https/clientkey.pem
+          filename: /certs/products-https/client.key
 
   listeners:
   - name: http_listener

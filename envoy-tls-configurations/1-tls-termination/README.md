@@ -34,5 +34,5 @@ curl http://ingress.foo.com/products
 
 Try out in a new terminal and same working directory.
 ```sh
-curl https://ingress.foo.com/products --cacert certs/servercert.pem
+curl https://ingress.foo.com/products --cacert certs/ca.crt
 ```

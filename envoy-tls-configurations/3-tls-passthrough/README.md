@@ -21,12 +21,12 @@ Add ingress host `ingress.foo.com` to `/etc/hosts`
 
 Test the backend server by directly invoking it.
 ```sh
-curl https://ingress.foo.com:8443/products --cacert certs/products-https/clientcert.pem
+curl https://ingress.foo.com:8443/products --cacert certs/products-https/ca.crt
 ```
 
 ### 3.1. HTTPS
 
 Try out in a new terminal and same working directory.
 ```sh
-curl https://ingress.foo.com/products --cacert certs/products-https/clientcert.pem
+curl https://ingress.foo.com/products --cacert certs/products-https/ca.crt
 ```

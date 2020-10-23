@@ -8,9 +8,13 @@ Here are some samples for TLS configurations for envoy with following scenarios.
 1. [TLS Origination (Re-encrypt)](2-tls-origination/README.md)
 
     (client) --> HTTPS --> (envoy proxy) --> **HTTPS** --> (backend)
-2. [TLS Passthrough](3-tls-passthrough/README.md)
+1. [TLS Passthrough](3-tls-passthrough/README.md)
 
     (client) --> HTTPS --> (envoy proxy) --> HTTPS --> (backend)
+
+1. [MTLS](4-mtls/README.md)
+
+    (client) <--> HTTPS <--> (envoy proxy) --> HTTP --> (backend)
 
 ## References
 

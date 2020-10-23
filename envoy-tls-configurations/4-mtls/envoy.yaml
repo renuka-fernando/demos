@@ -8,17 +8,12 @@ static_resources:
     - name: server_cert
       tls_certificate:
         certificate_chain:
-          filename: /certs/server.crt
+          filename: /certs/server/server.crt
         private_key:
-          filename: /certs/server.key
-    - name: client_cert
-      tls_certificate:
-        certificate_chain:
-          filename: /certs/products-https/client.crt
-        private_key:
-          filename: /certs/products-https/client.key
+          filename: /certs/server/server.key
 
   listeners:
+    
   - name: http_listener
     address:
       socket_address: { address: 0.0.0.0, port_value: 9080 }
@@ -36,9 +31,10 @@ static_resources:
               domains: ["*"]
               routes:
               - match: { prefix: "/" }
-                route: { cluster: products_https_service }
+                route: { cluster: products_http_service }
           http_filters:
           - name: envoy.filters.http.router
+  
   - name: https_listener
     address:
       socket_address: { address: 0.0.0.0, port_value: 9443 }
@@ -47,7 +43,7 @@ static_resources:
       - name: envoy.filters.network.http_connection_manager
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
-          stat_prefix: ingress_https
+          stat_prefix: ingress_http
           codec_type: AUTO
           route_config:
             name: local_route
@@ -56,36 +52,32 @@ static_resources:
               domains: ["*"]
               routes:
               - match: { prefix: "/" }
-                route: { cluster: products_https_service }
+                route: { cluster: products_http_service }
           http_filters:
           - name: envoy.filters.http.router
       transport_socket:
         name: envoy.transport_sockets.tls
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+          require_client_certificate: true
           common_tls_context:
             tls_certificate_sds_secret_configs:
             - name: server_cert
+            validation_context:
+              trusted_ca:
+                filename: /certs/client/ca.crt
 
   clusters:
-  - name: products_https_service
+  - name: products_http_service
     connect_timeout: 0.25s
     type: STRICT_DNS
     lb_policy: ROUND_ROBIN
     load_assignment:
-      cluster_name: products_https_service
+      cluster_name: products_http_service
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: products_https_service
-                port_value: 8443
-    transport_socket:
-      name: envoy.transport_sockets.tls
-      typed_config:
-        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
-        sni: ingress.com
-        common_tls_context:
-          tls_certificate_sds_secret_configs:
-            - name: client_cert
+                address: products_http_service
+                port_value: 8080

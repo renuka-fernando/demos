@@ -11,6 +11,10 @@ static_resources:
           filename: /certs/server/server.crt
         private_key:
           filename: /certs/server/server.key
+    - name: client_ca_cert
+      validation_context:
+        trusted_ca:
+          filename: /certs/client/ca.crt
 
   listeners:
     
@@ -63,9 +67,8 @@ static_resources:
           common_tls_context:
             tls_certificate_sds_secret_configs:
             - name: server_cert
-            validation_context:
-              trusted_ca:
-                filename: /certs/client/ca.crt
+            validation_context_sds_secret_config:
+              name: client_ca_cert
 
   clusters:
   - name: products_http_service

@@ -12,7 +12,7 @@ Here are some samples for TLS configurations for envoy with following scenarios.
 
     (client) --> HTTPS --> (envoy proxy) --> HTTPS --> (backend)
 
-1. [MTLS](4-mtls/README.md)
+1. [mTLS](4-mtls/README.md)
 
     (client) <--> HTTPS <--> (envoy proxy) --> HTTP --> (backend)
 

@@ -16,7 +16,7 @@ docker-compose up
 
 Add ingress host `ingress.foo.com` to `/etc/hosts`
 ```
-192.168.8.132    ingress.foo.com
+127.0.0.1    ingress.foo.com
 ```
 
 Test the backend server by directly invoking it.

@@ -21,7 +21,7 @@ curl http://localhost:8080/products
 
 Add ingress host `ingress.foo.com` to `/etc/hosts`
 ```
-<YOUR_IP>    ingress.foo.com
+127.0.0.1    ingress.foo.com
 ```
 
 ### 3.1. HTTP

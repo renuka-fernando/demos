@@ -36,22 +36,23 @@ curl http://tls.ingress.com/products
 
 ### 3.2. HTTPS
 
-TLS termination
+#### TLS termination
 ```sh
 curl https://tls.ingress.com/products --cacert certs/tls/ca.crt
 ```
 
-TLS Origination
+#### TLS Origination
 ```sh
 curl https://origination.ingress.com/products --cacert certs/origination/ca.crt
 ```
 
-TLS Passthrough (Backend server configured with origination configs so using certs in origination)
+#### TLS Passthrough
+Backend server configured with origination configs so using certs in origination
 ```sh
 curl https://passthrough.ingress.com/products --cacert certs/origination/products-https/ca.crt
 ```
 
- mTLS
+#### mTLS
  ```sh
 curl https://mtls.ingress.com/products \
     --cacert certs/mtls/server/ca.crt \

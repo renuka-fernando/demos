@@ -16,6 +16,8 @@ Here are some samples for TLS configurations for envoy with following scenarios.
 
     (client) <--> HTTPS <--> (envoy proxy) --> HTTP --> (backend)
 
+2. [Combine TLS](5-combine-all-tls-sample/README.md)
+
 ## References
 
 - Envoy TLS architectural overview: https://www.envoyproxy.io/docs/envoy/v1.16.0/intro/arch_overview/security/ssl

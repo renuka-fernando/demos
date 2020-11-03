@@ -12,11 +12,9 @@ static_resources:
         private_key:
           filename: /certs/server.key
     - name: client_cert
-      tls_certificate:
-        certificate_chain:
-          filename: /certs/products-https/client.crt
-        private_key:
-          filename: /certs/products-https/client.key
+      validation_context:
+        trusted_ca:
+          filename: /certs/products-https/client_ca.crt
 
   listeners:
   - name: http_listener
@@ -87,5 +85,5 @@ static_resources:
         "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
         sni: ingress.com
         common_tls_context:
-          tls_certificate_sds_secret_configs:
-            - name: client_cert
+          validation_context_sds_secret_config:
+            name: client_cert

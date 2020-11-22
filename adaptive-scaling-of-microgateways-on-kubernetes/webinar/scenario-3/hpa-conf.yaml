@@ -1,0 +1,54 @@
+#Copyright (c)  WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# WSO2 Inc. licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hpa-configs
+  namespace: wso2-system
+data:
+  # Horizontal Pod Auto-Scaling for Micro-Gateways
+  # Maximum number of replicas for the Horizontal Pod Auto-scale. Default->  maxReplicas: "5"
+  mgwMaxReplicas: "5"
+  # Metrics configurations
+  mgwMetrics: |
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_total_value_per_second
+        target:
+          type: AverageValue
+          averageValue: 2
+
+  # Horizontal Pod Auto-Scaling for Target-Endpoints
+  # Maximum number of replicas for the Horizontal Pod Auto-scale. Default->  maxReplicas: "5"
+  targetEndpointMaxReplicas: "5"
+  # Metrics configurations
+  targetEndpointMetrics: |
+    - type: Object
+      object:
+        metric:
+          name: http_requests_total_value_per_second
+        describedObject:
+          apiVersion: v1
+          kind: Service
+          name: abc-shopping-api
+        target:
+          type: Value
+          value: 1
+
+  # HPA version. For custom metrics HPA version should be v2beta2. Default-> v2beta1
+  hpaVersion: "v2beta2"

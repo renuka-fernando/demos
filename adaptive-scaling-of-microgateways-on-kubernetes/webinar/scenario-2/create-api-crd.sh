@@ -2,6 +2,7 @@
 
 # Apply HPA congis
 apictl apply -f hpa-conf.yaml
+k apply -f prometheus-adapter-configs.yaml
 
 # API 1 - Products
 apictl apply -f products-target-ep.yaml

@@ -1,17 +1,16 @@
 #!/bin/bash
 
 # Install ingress controller - NGINX
-# https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke
-kubectl create clusterrolebinding cluster-admin-binding \
-  --clusterrole cluster-admin \
-  --user $(gcloud config get-value account)
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.1/deploy/static/provider/cloud/deploy.yaml
+# https://kubernetes.github.io/ingress-nginx/deploy/#docker-for-mac
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/cloud/deploy.yaml
 
-# Install API Operator in ingress mode and GCR as the registry
+# Install API Operator in ingress mode and using DockerHub
 apictl install api-operator \
     --from-file api-operator-controller-artifacts-1.2.0 \
-    --registry-type GCR \
-    --key-file /Users/renuka/softwares/apim-kube-svc-acc-key.json
+    --registry-type DOCKER_HUB \
+    --repository=<REPOSITORY> \
+    --username=<USER_NAME> \
+    --password=<PASSWORD>
 
 # configure metrics server, install this if using a local cluster
 # apictl apply -f prometheus-configs/metrics-server/metrics-server-components-0.3.6.yaml

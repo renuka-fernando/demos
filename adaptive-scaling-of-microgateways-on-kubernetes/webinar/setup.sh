@@ -5,6 +5,8 @@
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/cloud/deploy.yaml
 
 # Install API Operator in ingress mode and using DockerHub
+# Enabled Observability
+# Setted ingressHostName as "mgw.ingress.wso2.com"
 apictl install api-operator \
     --from-file api-operator-controller-artifacts-1.2.0 \
     --registry-type DOCKER_HUB \
@@ -21,6 +23,9 @@ apictl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/v0.
 # Create a Prometheus instance
 apictl apply -f prometheus-configs/prometheus/
 # Access prometheus via http://<NODE-IP>:30900/graph
+
+# Install Metrics Server to collects resource metrics (optional for GKE and other cloud vendors)
+apictl apply -f metrics-server/metrics-server-components-0.3.6.yaml
 
 # Install Prometheus Adapter
 apictl create namespace custom-metrics

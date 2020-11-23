@@ -2,7 +2,7 @@
 
 # Apply HPA congis
 apictl apply -f hpa-conf.yaml
-k apply -f prometheus-adapter-configs.yaml
+kubectl apply -f prometheus-adapter-configs.yaml
 
 # Backend services
 apictl apply -f products-target-ep.yaml

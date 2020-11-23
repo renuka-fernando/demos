@@ -11,13 +11,13 @@ Prometheus and Prometheus Adapter.
 ./setup.sh
 ```
 
-### 2. Scenario 1
+### 2. Scenario 1 - Shared Gateway
 
 Create APIs
 ```sh
-cd scenario-1
+cd scenario-1-shared-gateway
 
-./create-api-crd.sh
+./apply-configs.sh
 ```
 
 Add ingress address to `/etc/hosts`.

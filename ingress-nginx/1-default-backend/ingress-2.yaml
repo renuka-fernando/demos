@@ -1,0 +1,35 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: products-2
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  # Override default backend
+  backend:
+    serviceName: my-service-5
+    servicePort: 8080
+  rules:
+    - host: localhost-2
+      http:
+        paths:
+          - path: /products/tv
+            backend:
+              serviceName: my-service-4
+              servicePort: 8080
+    - host: localhost-2
+      http:
+        paths:
+          - path: /products/tv/foo
+            backend:
+              serviceName: foo-service-not-found
+              servicePort: 8080
+    - host: localhost-2
+      http:
+        paths:
+            # Override path
+          - path: /products/not
+            backend:
+              serviceName: my-service-1
+              servicePort: 8080

@@ -12,7 +12,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /products
             backend:
               serviceName: my-service-1
               servicePort: 8080

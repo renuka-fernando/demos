@@ -16,7 +16,9 @@ Here are some samples for TLS configurations for envoy with following scenarios.
 
     (client) <--> HTTPS <--> (envoy proxy) --> HTTP --> (backend)
 
-2. [Combine TLS](5-combine-all-tls-sample/README.md)
+1. [Combine TLS](5-combine-all-tls-sample/README.md)
+
+1. [Virtual Hosts](6-virtual-hosts/README.md)
 
 ## References
 

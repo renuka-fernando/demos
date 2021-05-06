@@ -1,0 +1,35 @@
+version: "2.4"
+services:
+  us-region:
+    image: wso2/wso2am:4.0.0
+    healthcheck:
+      test: ["CMD", "nc", "-z","localhost", "9443"]
+      interval: 10s
+      retries: 50
+    ports:
+      - "9763:9763"
+      - "9443:9443"
+      - "5672:5672"
+      - "8243:8243"
+      - "8280:8280"
+    volumes:
+      - ./us-all-in-one/deployment.toml:/home/wso2carbon/wso2am-4.0.0/repository/conf/deployment.toml
+  sg-region:
+    image: wso2/wso2am:4.0.0
+    environment:
+      - PROFILE_NAME=gateway-worker
+    healthcheck:
+      test: [ "CMD", "nc", "-z","localhost", "9443" ]
+      interval: 10s
+      retries: 50
+    ports:
+      - "8244:8243"
+      - "8281:8280"
+    volumes:
+      - ./sg-gateway-worker/deployment.toml:/home/wso2carbon/wso2am-4.0.0/repository/conf/deployment.toml
+      - ./sg-gateway-worker/docker-entrypoint.sh:/home/wso2carbon/docker-entrypoint.sh
+    depends_on:
+      us-region:
+        condition: service_healthy
+    links:
+      - us-region

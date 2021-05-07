@@ -1,0 +1,65 @@
+openapi: 3.0.0
+servers:
+  - description: Docker-Compose sample-backend
+    url: http://sample-backend:8080
+info:
+  description: This is a sample backend - Pet Foods
+  version: v1
+  title: Pet Foods
+  contact:
+    email: renukapiyumal@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: petfoods
+    description: Pet foods
+paths:
+  /petfoods:
+    get:
+      tags:
+        - petfoods
+      summary: Pet Foods
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetFoodList"
+components:
+  schemas:
+    PetFoodList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        list:
+          type: array
+          items:
+            $ref: "#/components/schemas/PetFood"
+    PetFood:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        category:
+          type: string
+          example: dog
+        manufacturer:
+          type: string
+          example: Just Food For Dogs
+        name:
+          type: string
+          example: JustFoodForDogs Chicken & White Rice Frozen Cooked Dog Food
+        price:
+          type: number
+          example: 7.99
+        details:
+          type: string
+          example: Just Food for Dogs Chicken and White Rice Recipe features 100% ingredients approved for human consumption. This adult life stage dog food is all natural, healthy, and made by hand in small batches in Southern California.
+        ingredients:
+          type: string
+          example: Chicken Thigh, Long Grain White Rice, Spinach, Carrots, Apples, Chicken Gizzard, Chicken Liver

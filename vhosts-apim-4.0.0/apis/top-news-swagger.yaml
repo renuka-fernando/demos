@@ -1,0 +1,68 @@
+openapi: 3.0.0
+servers:
+  - description: Docker-Compose sample-backend
+    url: http://sample-backend:8080
+info:
+  description: This is a sample backend - Top News
+  version: v1
+  title: Top News
+  contact:
+    email: renukapiyumal@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: news
+    description: News Feed
+paths:
+  /top-headlines:
+    get:
+      tags:
+        - news
+      summary: Top news
+      description: Top news of the day
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Headline"
+components:
+  schemas:
+    Headline:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        articles:
+          type: object
+          properties:
+            source:
+              type: string
+              example: CNN
+            author:
+              type: string
+              example: Madeline Holcombe, CNN
+            title:
+              type: string
+              example: Covid-19 herd immunity is a difficult target, experts warn, but vaccinating teens could be key to protecting us this fall - CNN
+            description:
+              type: string
+              example: Vaccinations could soon open up for children 12 to 15 years old, a development that could be key to protecting the United States against Covid-19 as overall vaccination rates slow.
+            url:
+              type: string
+              example: https://www.cnn.com/2021/05/06/health/us-coronavirus-thursday/index.html
+            urlToImage:
+              type: string
+              example: https://cdn.cnn.com/cnnnext/dam/assets/210506023823-us-coronavirus-0420-restricted-super-tease.jpg
+            publishedAt:
+              type: string
+              format: date-time
+              example: "2021-05-06T10:18:00Z"
+            content:
+              type: string
+              example: (CNN)Vaccinations could soon open up for children 12 to 15 years old, a development that could be key to protecting the United States against Covid-19 as overall vaccination rates slow.
+
+

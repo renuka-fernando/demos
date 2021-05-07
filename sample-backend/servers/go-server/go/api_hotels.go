@@ -22,18 +22,18 @@ func HotelsGet(w http.ResponseWriter, r *http.Request) {
   "count": 2,
   "hotels": [
     {
-      "brand":"Hilton",
-        "name":"Parc 55 San Francisco - A Hilton Hotel",
-      "starRating":4,
-      "overallGuestRating":8,
-      "totalReviewCount":1580
+      "brand": "Hilton",
+      "name": "Parc 55 San Francisco - A Hilton Hotel",
+      "starRating": 4,
+      "overallGuestRating": 8,
+      "totalReviewCount": 1580
     },
     {
-      "brand":"Intercontinental",
-      "name":"Intercontinental San Francisco",
-      "starRating":4.5,
-      "overallGuestRating":8.6,
-      "totalReviewCount":658
+      "brand": "Intercontinental",
+      "name": "Intercontinental San Francisco",
+      "starRating": 4.5,
+      "overallGuestRating": 8.6,
+      "totalReviewCount": 658
     }
   ]
 }`

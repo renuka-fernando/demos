@@ -31,5 +31,7 @@ services:
     depends_on:
       us-region:
         condition: service_healthy
-    links:
-      - us-region
+  sample-backend:
+    image: cakebakery/sample-backend:v1
+    ports:
+      - "8080:8080"

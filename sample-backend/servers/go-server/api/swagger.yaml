@@ -1,0 +1,402 @@
+openapi: 3.0.0
+info:
+  title: Sample Backend
+  description: This is a sample backend
+  contact:
+    email: renukapiyumal@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: Localhost
+tags:
+- name: hotels
+  description: Hotels
+- name: petfoods
+  description: Pet foods
+- name: news
+  description: News Feed
+- name: weather
+  description: Current weather
+- name: forecast
+  description: Forecast weather
+paths:
+  /hotels:
+    get:
+      tags:
+      - hotels
+      summary: Top hotels
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelList'
+  /petfoods:
+    get:
+      tags:
+      - petfoods
+      summary: Pet Foods
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetFoodList'
+  /top-headlines:
+    get:
+      tags:
+      - news
+      summary: Top news
+      description: Top news of the day
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Headline'
+  /weather:
+    get:
+      tags:
+      - weather
+      summary: Current weather
+      description: Weather by city name
+      parameters:
+      - name: city
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Mountain View
+          - Denver
+          - Boston
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentWeather'
+        "404":
+          description: City not found
+  /forecast/hourly:
+    get:
+      tags:
+      - forecast
+      summary: Forecasted weather
+      description: Forecasted weather by city name
+      parameters:
+      - name: city
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Mountain View
+          - Denver
+          - Boston
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForecastWeather'
+        "404":
+          description: City not found
+components:
+  schemas:
+    HotelList:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          example: US
+        stateCode:
+          type: string
+          example: CA
+        lat:
+          type: number
+          example: 37.655757904052734
+        lon:
+          type: number
+          example: -122.41319274902344
+        count:
+          type: integer
+          example: 1
+        hotels:
+          $ref: '#/components/schemas/HotelList_hotels'
+      example:
+        hotels:
+          name: Parc 55 San Francisco - A Hilton Hotel
+          overallGuestRating: 8
+          starRating: 4
+          brand: Hilton
+          totalReviewCount: 1580
+        countryCode: US
+        count: 1
+        stateCode: CA
+        lon: -122.41319274902344
+        lat: 37.655757904052734
+    PetFoodList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/PetFood'
+      example:
+        count: 1
+        list:
+        - price: 7.99
+          name: JustFoodForDogs Chicken & White Rice Frozen Cooked Dog Food
+          ingredients: "Chicken Thigh, Long Grain White Rice, Spinach, Carrots, Apples,\
+            \ Chicken Gizzard, Chicken Liver"
+          details: "Just Food for Dogs Chicken and White Rice Recipe features 100%\
+            \ ingredients approved for human consumption. This adult life stage dog\
+            \ food is all natural, healthy, and made by hand in small batches in Southern\
+            \ California."
+          id: 1
+          category: dog
+          manufacturer: Just Food For Dogs
+        - price: 7.99
+          name: JustFoodForDogs Chicken & White Rice Frozen Cooked Dog Food
+          ingredients: "Chicken Thigh, Long Grain White Rice, Spinach, Carrots, Apples,\
+            \ Chicken Gizzard, Chicken Liver"
+          details: "Just Food for Dogs Chicken and White Rice Recipe features 100%\
+            \ ingredients approved for human consumption. This adult life stage dog\
+            \ food is all natural, healthy, and made by hand in small batches in Southern\
+            \ California."
+          id: 1
+          category: dog
+          manufacturer: Just Food For Dogs
+    PetFood:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        category:
+          type: string
+          example: dog
+        manufacturer:
+          type: string
+          example: Just Food For Dogs
+        name:
+          type: string
+          example: JustFoodForDogs Chicken & White Rice Frozen Cooked Dog Food
+        price:
+          type: number
+          example: 7.99
+        details:
+          type: string
+          example: "Just Food for Dogs Chicken and White Rice Recipe features 100%\
+            \ ingredients approved for human consumption. This adult life stage dog\
+            \ food is all natural, healthy, and made by hand in small batches in Southern\
+            \ California."
+        ingredients:
+          type: string
+          example: "Chicken Thigh, Long Grain White Rice, Spinach, Carrots, Apples,\
+            \ Chicken Gizzard, Chicken Liver"
+      example:
+        price: 7.99
+        name: JustFoodForDogs Chicken & White Rice Frozen Cooked Dog Food
+        ingredients: "Chicken Thigh, Long Grain White Rice, Spinach, Carrots, Apples,\
+          \ Chicken Gizzard, Chicken Liver"
+        details: "Just Food for Dogs Chicken and White Rice Recipe features 100% ingredients\
+          \ approved for human consumption. This adult life stage dog food is all\
+          \ natural, healthy, and made by hand in small batches in Southern California."
+        id: 1
+        category: dog
+        manufacturer: Just Food For Dogs
+    Headline:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        articles:
+          $ref: '#/components/schemas/Headline_articles'
+      example:
+        count: 1
+        articles:
+          publishedAt: 2021-05-06T10:18:00Z
+          author: "Madeline Holcombe, CNN"
+          urlToImage: https://cdn.cnn.com/cnnnext/dam/assets/210506023823-us-coronavirus-0420-restricted-super-tease.jpg
+          description: "Vaccinations could soon open up for children 12 to 15 years\
+            \ old, a development that could be key to protecting the United States\
+            \ against Covid-19 as overall vaccination rates slow."
+          source: CNN
+          title: "Covid-19 herd immunity is a difficult target, experts warn, but\
+            \ vaccinating teens could be key to protecting us this fall - CNN"
+          url: https://www.cnn.com/2021/05/06/health/us-coronavirus-thursday/index.html
+          content: "(CNN)Vaccinations could soon open up for children 12 to 15 years\
+            \ old, a development that could be key to protecting the United States\
+            \ against Covid-19 as overall vaccination rates slow."
+    CurrentWeather:
+      type: object
+      properties:
+        country:
+          type: string
+          example: US
+        city:
+          type: string
+          example: Mountain View
+        timezone:
+          type: integer
+          example: -25200
+        weather:
+          $ref: '#/components/schemas/Weather'
+      example:
+        country: US
+        city: Mountain View
+        timezone: -25200
+        weather:
+          datetime: 1620280800
+          temp: 282.55
+          humidity: 100
+          pressure: 1023
+          feels_like: 281.86
+    ForecastWeather:
+      type: object
+      properties:
+        country:
+          type: string
+          example: US
+        city:
+          type: string
+          example: Mountain View
+        timezone:
+          type: integer
+          example: -25200
+        count:
+          type: integer
+          example: 1
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Weather'
+      example:
+        country: US
+        city: Mountain View
+        timezone: -25200
+        count: 1
+        list:
+        - datetime: 1620280800
+          temp: 282.55
+          humidity: 100
+          pressure: 1023
+          feels_like: 281.86
+        - datetime: 1620280800
+          temp: 282.55
+          humidity: 100
+          pressure: 1023
+          feels_like: 281.86
+    Weather:
+      type: object
+      properties:
+        datetime:
+          type: integer
+          example: 1620280800
+        temp:
+          type: number
+          example: 282.55
+        feels_like:
+          type: number
+          example: 281.86
+        pressure:
+          type: integer
+          example: 1023
+        humidity:
+          type: integer
+          example: 100
+      example:
+        datetime: 1620280800
+        temp: 282.55
+        humidity: 100
+        pressure: 1023
+        feels_like: 281.86
+    HotelList_hotels:
+      type: object
+      properties:
+        brand:
+          type: string
+          example: Hilton
+        name:
+          type: string
+          example: Parc 55 San Francisco - A Hilton Hotel
+        starRating:
+          type: number
+          example: 4
+        overallGuestRating:
+          type: number
+          example: 8
+        totalReviewCount:
+          type: integer
+          example: 1580
+      example:
+        name: Parc 55 San Francisco - A Hilton Hotel
+        overallGuestRating: 8
+        starRating: 4
+        brand: Hilton
+        totalReviewCount: 1580
+    Headline_articles:
+      type: object
+      properties:
+        source:
+          type: string
+          example: CNN
+        author:
+          type: string
+          example: "Madeline Holcombe, CNN"
+        title:
+          type: string
+          example: "Covid-19 herd immunity is a difficult target, experts warn, but\
+            \ vaccinating teens could be key to protecting us this fall - CNN"
+        description:
+          type: string
+          example: "Vaccinations could soon open up for children 12 to 15 years old,\
+            \ a development that could be key to protecting the United States against\
+            \ Covid-19 as overall vaccination rates slow."
+        url:
+          type: string
+          example: https://www.cnn.com/2021/05/06/health/us-coronavirus-thursday/index.html
+        urlToImage:
+          type: string
+          example: https://cdn.cnn.com/cnnnext/dam/assets/210506023823-us-coronavirus-0420-restricted-super-tease.jpg
+        publishedAt:
+          type: string
+          format: date-time
+          example: 2021-05-06T10:18:00Z
+        content:
+          type: string
+          example: "(CNN)Vaccinations could soon open up for children 12 to 15 years\
+            \ old, a development that could be key to protecting the United States\
+            \ against Covid-19 as overall vaccination rates slow."
+      example:
+        publishedAt: 2021-05-06T10:18:00Z
+        author: "Madeline Holcombe, CNN"
+        urlToImage: https://cdn.cnn.com/cnnnext/dam/assets/210506023823-us-coronavirus-0420-restricted-super-tease.jpg
+        description: "Vaccinations could soon open up for children 12 to 15 years\
+          \ old, a development that could be key to protecting the United States against\
+          \ Covid-19 as overall vaccination rates slow."
+        source: CNN
+        title: "Covid-19 herd immunity is a difficult target, experts warn, but vaccinating\
+          \ teens could be key to protecting us this fall - CNN"
+        url: https://www.cnn.com/2021/05/06/health/us-coronavirus-thursday/index.html
+        content: "(CNN)Vaccinations could soon open up for children 12 to 15 years\
+          \ old, a development that could be key to protecting the United States against\
+          \ Covid-19 as overall vaccination rates slow."

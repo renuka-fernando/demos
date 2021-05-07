@@ -13,7 +13,7 @@ info:
     url: https://opensource.org/licenses/MIT
 tags:
   - name: weather
-    description: Current weather
+    description: Current weather and Forecast
   - name: forecast
     description: Forecast weather
 paths:

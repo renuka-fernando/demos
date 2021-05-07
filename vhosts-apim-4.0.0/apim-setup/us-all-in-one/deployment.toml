@@ -48,6 +48,7 @@ key_password =  "wso2carbon"
 
 [[apim.gateway.environment]]
 name = "us-region"
+display_name = "US Region"
 type = "hybrid"
 display_in_api_console = true
 description = "This is a hybrid gateway that handles both production and sandbox token traffic."
@@ -63,12 +64,12 @@ websub_event_receiver_http_endpoint = "http://us.wso2.com:9021"
 websub_event_receiver_https_endpoint = "https://us.wso2.com:8021"
 
 [[apim.gateway.environment.virtual_host]]
-ws_endpoint = "ws://abc.store:9099"
-wss_endpoint = "wss://abc.store:8099"
-http_endpoint = "http://abc.store:${http.nio.port}"
-https_endpoint = "https://abc.store:${https.nio.port}"
-websub_event_receiver_http_endpoint = "http://abc.store:9021"
-websub_event_receiver_https_endpoint = "https://abc.store:8021"
+ws_endpoint = "ws://pets.com:9099"
+wss_endpoint = "wss://pets.com:8099"
+http_endpoint = "http://pets.com:${http.nio.port}"
+https_endpoint = "https://pets.com:${https.nio.port}"
+websub_event_receiver_http_endpoint = "http://pets.com:9021"
+websub_event_receiver_https_endpoint = "https://pets.com:8021"
 
 [apim.sync_runtime_artifacts.gateway]
 gateway_labels =["us-region"]

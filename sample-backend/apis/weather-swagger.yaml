@@ -1,0 +1,123 @@
+openapi: 3.0.0
+servers:
+  - description: Localhost
+    url: http://localhost:8080
+info:
+  description: This is a sample backend - Weather
+  version: v1
+  title: Weather
+  contact:
+    email: renukapiyumal@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: weather
+    description: Current weather
+  - name: forecast
+    description: Forecast weather
+paths:
+  /weather:
+    get:
+      tags:
+        - weather
+      summary: Current weather
+      description: Weather by city name
+      parameters:
+        - name: city
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - Mountain View
+              - Denver
+              - Boston
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentWeather"
+        404:
+          description: City not found
+  /forecast/hourly:
+    get:
+      tags:
+        - forecast
+      summary: Forecasted weather
+      description: Forecasted weather by city name
+      parameters:
+        - name: city
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - Mountain View
+              - Denver
+              - Boston
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForecastWeather"
+        404:
+          description: City not found
+
+components:
+  schemas:
+    CurrentWeather:
+      type: object
+      properties:
+        country:
+          type: string
+          example: US
+        city:
+          type: string
+          example: Mountain View
+        timezone:
+          type: integer
+          example: -25200
+        weather:
+          $ref: "#/components/schemas/Weather"
+    ForecastWeather:
+      type: object
+      properties:
+        country:
+          type: string
+          example: US
+        city:
+          type: string
+          example: Mountain View
+        timezone:
+          type: integer
+          example: -25200
+        count:
+          type: integer
+          example: 1
+        list:
+          type: array
+          items:
+            $ref: "#/components/schemas/Weather"
+    Weather:
+      type: object
+      properties:
+        datetime:
+          type: integer
+          example: 1620280800
+        temp:
+          type: number
+          example: 282.55
+        feels_like:
+          type: number
+          example: 281.86
+        pressure:
+          type: integer
+          example: 1023
+        humidity:
+          type: integer
+          example: 100

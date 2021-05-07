@@ -1,0 +1,67 @@
+openapi: 3.0.0
+servers:
+  - description: Localhost
+    url: http://localhost:8080
+info:
+  description: This is a sample backend - Hotels
+  version: v1
+  title: Hotels
+  contact:
+    email: renukapiyumal@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: hotels
+    description: Hotels
+paths:
+  /hotels:
+    get:
+      tags:
+        - hotels
+      summary: Top hotels
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelList"
+components:
+  schemas:
+    HotelList:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          example: US
+        stateCode:
+          type: string
+          example: CA
+        lat:
+          type: number
+          example: 37.655757904052734
+        lon:
+          type: number
+          example: -122.41319274902344
+        count:
+          type: integer
+          example: 1
+        hotels:
+          type: object
+          properties:
+            brand:
+              type: string
+              example: Hilton
+            name:
+              type: string
+              example: Parc 55 San Francisco - A Hilton Hotel
+            starRating:
+              type: number
+              example: 4
+            overallGuestRating:
+              type: number
+              example: 8
+            totalReviewCount:
+              type: integer
+              example: 1580

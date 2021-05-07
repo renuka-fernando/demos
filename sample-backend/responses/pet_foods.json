@@ -1,0 +1,32 @@
+{
+  "count": 3,
+  "list": [
+    {
+      "id": 1,
+      "category": "dog",
+      "manufacturer": "Just Food For Dogs",
+      "name": "JustFoodForDogs Chicken & White Rice Frozen Cooked Dog Food",
+      "price": 7.99,
+      "details": "Just Food for Dogs Chicken and White Rice Recipe features 100% ingredients approved for human consumption. This adult life stage dog food is all natural, healthy, and made by hand in small batches in Southern California.",
+      "ingredients": "Chicken Thigh, Long Grain White Rice, Spinach, Carrots, Apples, Chicken Gizzard, Chicken Liver"
+    },
+    {
+      "id": 2,
+      "category": "cat",
+      "manufacturer": "Nulo",
+      "name": "Nulo Freestyle Cat & Kitten Turkey & Chicken Recipe Canned Cat Food",
+      "price": 2.06,
+      "details": "Nulo Turkey and Chicken Recipe is a grain-free wet cat food featuring high-quality protein from turkey and chicken to help your cat maintain lean muscles.",
+      "ingredients": "Turkey, Chicken, Turkey Liver, Turkey Broth, Tuna, Natural Flavor, Guar Gum"
+    },
+    {
+      "id": 3,
+      "category": "cat",
+      "manufacturer": "Kiwi Kitchens",
+      "name": "Kiwi Kitchens Chicken Dinner Canned Cat Food",
+      "price": 1.61,
+      "details": "Kiwi Kitchens Barn-Raised Chicken Dinner is an all-natural canned cat food featuring 93% barn-raised chicken from New Zealand, which is high in protein and omega-3 fatty acids to help support healthy skin and coat.",
+      "ingredients": "Chicken, Chicken Broth, Fish Oil, Brewer’s Yeast, Cassia, Salt, Agar Agar, Guar Gum"
+    }
+  ]
+}

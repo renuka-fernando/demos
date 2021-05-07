@@ -1,0 +1,35 @@
+{
+  "timezone": -25200,
+  "country": "US",
+  "city": "Mountain View",
+  "count": 3,
+  "list": [
+    {
+      "datetime": 1620280800,
+      "temp": 282.55,
+      "feels_like": 281.86,
+      "pressure": 1023,
+      "humidity": 100,
+      "wind_speed": 1.5,
+      "wind_deg": 350
+    },
+    {
+      "datetime": 1620284400,
+      "temp": 283.55,
+      "feels_like": 282.86,
+      "pressure": 1023,
+      "humidity": 100,
+      "wind_speed": 1.5,
+      "wind_deg": 350
+    },
+    {
+      "datetime": 1620288000,
+      "temp": 281.55,
+      "feels_like": 280.86,
+      "pressure": 1023,
+      "humidity": 100,
+      "wind_speed": 1.5,
+      "wind_deg": 350
+    }
+  ]
+}

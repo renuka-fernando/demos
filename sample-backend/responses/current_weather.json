@@ -1,0 +1,14 @@
+{
+  "timezone": -25200,
+  "country": "US",
+  "city": "Mountain View",
+  "weather": {
+    "datetime": 1620280800,
+    "temp": 282.55,
+    "feels_like": 281.86,
+    "pressure": 1023,
+    "humidity": 100,
+    "wind_speed": 1.5,
+    "wind_deg": 350
+  }
+}

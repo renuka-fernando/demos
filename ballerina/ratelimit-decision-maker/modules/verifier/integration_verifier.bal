@@ -1,6 +1,6 @@
 import ballerina/io;
 
-class Integration {
+class IntegrationVerifier {
     *Verifier;
 
     function canProcess(string res) returns boolean {
@@ -8,7 +8,7 @@ class Integration {
         return  !(resources.indexOf(res) is ());
     }
 
-    function isQuotaAvailable(int orgId, string res) returns boolean {
+    function isQuotaAvailable(string orgId, string res) returns boolean {
         io:println("Integration Verfifier");
         return true;
     }

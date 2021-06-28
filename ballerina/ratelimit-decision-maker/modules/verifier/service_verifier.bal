@@ -1,6 +1,6 @@
 import ballerina/io;
 
-class Service {
+class ServiceVerifier {
     *Verifier;
 
     function canProcess(string res) returns boolean {
@@ -8,7 +8,7 @@ class Service {
         return  !(resources.indexOf(res) is ());
     }
 
-    function isQuotaAvailable(int orgId, string res) returns boolean {
+    function isQuotaAvailable(string orgId, string res) returns boolean {
         io:println("Service Verfifier");
         return false;
     }

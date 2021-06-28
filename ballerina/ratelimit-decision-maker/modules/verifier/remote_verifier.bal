@@ -1,14 +1,14 @@
 import ballerina/io;
 
-class RemoteApp {
+class RemoteAppVerifier {
     *Verifier;
 
     function canProcess(string res) returns boolean {
         return "Custom" == res;
     }
 
-    function isQuotaAvailable(int orgId, string res) returns boolean {
-        io:println("Integration Verfifier");
+    function isQuotaAvailable(string orgId, string res) returns boolean {
+        io:println("Remote Verfifier");
         return true;
     }
     

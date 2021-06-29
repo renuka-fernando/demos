@@ -1,8 +1,8 @@
 import ballerina/io;
 
 type Verifier object {
-    function canProcess(string res) returns boolean;
-    function isQuotaAvailable(string orgId, string res) returns boolean;
+    function canProcess(string res) returns boolean|error;
+    function isQuotaAvailable(string orgId, string res) returns boolean|error;
 };
 
 public type Tier record {|
@@ -11,13 +11,18 @@ public type Tier record {|
     int integrationQuota;
 |};
 
+// we can use a map instead of an array, and remove canProcess() function
+// but if we have canProcess(), verifiers can introduce its own logic.
 Verifier[] v;
 
-public function isQuotaAvailable(string orgId, string res) returns boolean {
+public function isQuotaAvailable(string orgId, string res) returns boolean|error {
     boolean found = false;
     foreach Verifier x in v {
-        if x.canProcess(res) {
+        boolean ok = check x.canProcess(res);
+        if ok {
             // we can get tier from here or inside this function
+            // if there are no multiple resources called at once (multiple verifiers) we can call it inside verifier.
+            // otherwise we can call it here and pass tier to verifier.
             return x.isQuotaAvailable(orgId, res);
         }
     }
@@ -36,5 +41,9 @@ public function getTeir(int orgId) returns Tier {
 }
 
 function init() {
-    v = [new ServiceVerifier(), new IntegrationVerifier(), new RemoteAppVerifier()];
+    v = [
+        new ServiceVerifier(),
+        new IntegrationVerifier(),
+        new RemoteAppVerifier()
+    ];
 }

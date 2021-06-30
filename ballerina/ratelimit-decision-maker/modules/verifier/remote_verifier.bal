@@ -9,9 +9,10 @@ class RemoteAppVerifier {
         return "Custom" == res;
     }
 
-    function isQuotaAvailable(string orgId, string res) returns boolean|error {
-        io:println("Remote Verfifier");
-        return true;
+    function isQuotaAvailable(string orgId, string res, Tier tier) returns boolean|error {
+        io:println("Remote Verfifier", tier);
+        // return true;
+        return error("invalid displayType");
     }
     
 }

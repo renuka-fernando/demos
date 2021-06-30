@@ -10,7 +10,7 @@ class ServiceVerifier {
         return  !(resources.indexOf(res) is ());
     }
 
-    function isQuotaAvailable(string orgId, string res) returns boolean|error {
+    function isQuotaAvailable(string orgId, string res, Tier tier) returns boolean|error {
         io:println("Service Verfifier");
         return false;
     }

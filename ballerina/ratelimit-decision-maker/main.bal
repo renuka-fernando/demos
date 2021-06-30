@@ -7,6 +7,12 @@ public function main() returns error? {
     // we can also define some optional attributes variable.
     // can we use any data type: https://ballerina.io/learn/by-example/any-type.html
     // org id: string or get int from DB?
-    boolean quotaAvailable = check verifier:isQuotaAvailable("renukafernando", "Custom");
+
+    // we can get tier from here.
+
+    // Tier tier = getTeir(orgId);
+    // verifier:isQuotaAvailable(RequestOBject, Tier);
+    boolean quotaAvailable = check verifier:isQuotaAvailable("renukafernando", "app::Custom");
+    io:println("No Errors");
     io:println(quotaAvailable);
 }

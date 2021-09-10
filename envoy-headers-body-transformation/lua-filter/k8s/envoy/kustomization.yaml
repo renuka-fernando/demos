@@ -1,0 +1,9 @@
+resources:
+  - deploy.yaml
+  - svc.yaml
+
+configMapGenerator:
+  - name: enovy-yaml
+    behavior: create
+    files:
+      - envoy.yaml

@@ -25,6 +25,8 @@ service / on securedEP {
 
         http:Response resp = new;
         resp.setHeader("x-wso2-add-shape", "plain");
+        resp.setHeader("x-wso2-add-mediation", "ballerina");
+        resp.setHeader("x-wso2-remove-foo", "");
         resp.setPayload(string `Hello, ${payload}!`);
         
         check caller->respond(resp);

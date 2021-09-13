@@ -1,7 +1,17 @@
 import ballerina/http;
 import ballerina/io;
 // import ballerina/lang.runtime;
-service / on new http:Listener(9090) {
+
+listener http:Listener securedEP = new(9090,
+    secureSocket = {
+        key: {
+            certFile: "certs/ca.crt",
+            keyFile: "certs/ca.key"
+        }
+    }
+);
+
+service / on securedEP {
     resource function post handlerequest(http:Caller caller, http:Request request) returns error? {
         io:println("backend is called");
         string payload = check request.getTextPayload();

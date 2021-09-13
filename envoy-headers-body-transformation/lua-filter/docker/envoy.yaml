@@ -10,6 +10,11 @@ node:
   id: test-id
 
 static_resources:
+  secrets:
+    - name: mediation_ca_cert
+      validation_context:
+        trusted_ca:
+          filename: /certs/ca.crt
   listeners:
     - name: http_listener
       address:
@@ -57,21 +62,21 @@ static_resources:
                           local request_headers_table = {}
                           for key, value in pairs(request_headers) do
                             request_handle:logInfo("Lua1 Request Headers: " .. key .. "->" .. value)
-                            request_headers_table[key] = val
+                            request_headers_table[key] = value
                           end
                           local request_body = request_handle:body():getBytes(0, request_handle:body():length())
 
                           request_handle:logInfo("Lua1 Request Body: " .. request_body)
 
+                          local x_wso2_context_key = "x-wso2-context"
+                          request_headers_table[x_wso2_context_key .. "-method"] = request_headers_table[":method"]
+                          request_headers_table[x_wso2_context_key .. "-path"] = request_headers_table[":path"]
                           request_headers_table[":method"] = "POST"
                           request_headers_table[":path"] = "/handlerequest"
+
                           local mediation_headers, mediation_body = request_handle:httpCall(
                             "ballerina_service",
-                            {
-                              [":method"] = "POST",
-                              [":path"] = "/handlerequest",
-                              [":authority"] = "ballerina_service"
-                            },
+                            request_headers_table,
                             request_body,
                             100000,
                             false
@@ -117,8 +122,16 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 192.168.8.132
+                      address: mediation-service-host
                       port_value: 9090
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          sni: mediation-service-host
+          common_tls_context:
+            validation_context_sds_secret_config:
+              name: mediation_ca_cert
     - name: ballerina-backend-lua
       connect_timeout: 200s
       type: LOGICAL_DNS

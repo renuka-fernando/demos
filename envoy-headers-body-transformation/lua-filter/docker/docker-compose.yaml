@@ -7,6 +7,7 @@ services:
     # command: -c /etc/envoy/envoy.yaml --component-log-level conn_handler:trace,connection:trace,client:trace
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - ../certs:/certs
     ports:
       - 8080:8080
       - 9000:9000

@@ -1,0 +1,149 @@
+admin:
+  access_log_path: /dev/null
+  address:
+    socket_address:
+      address: 127.0.0.1
+      port_value: 9000
+
+node:
+  cluster: service_greeter
+  id: test-id
+
+static_resources:
+  listeners:
+    - name: http_listener
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8080
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: local_service
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/"
+                          route:
+                            timeout: 100000s
+                            cluster: service_httpbin
+                        - match:
+                            prefix: "/without"
+                          route:
+                            timeout: 100000s
+                            cluster: ballerina-backend-without
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              disabled: true
+                  internal_only_headers:
+                    - isadmin
+                http_filters:
+                  - name: envoy.filters.http.lua.mediation
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+                      inline_code: |
+                        function envoy_on_request(request_handle)
+                          request_handle:logInfo("Hello Lua1")
+                          local request_headers = request_handle:headers()
+                          local request_headers_table = {}
+                          for key, value in pairs(request_headers) do
+                            request_handle:logInfo("Lua1 Request Headers: " .. key .. "->" .. value)
+                            request_headers_table[key] = val
+                          end
+                          local request_body = request_handle:body():getBytes(0, request_handle:body():length())
+
+                          request_handle:logInfo("Lua1 Request Body: " .. request_body)
+
+                          request_headers_table[":method"] = "POST"
+                          request_headers_table[":path"] = "/handlerequest"
+                          local mediation_headers, mediation_body = request_handle:httpCall(
+                            "ballerina_service",
+                            {
+                              [":method"] = "POST",
+                              [":path"] = "/handlerequest",
+                              [":authority"] = "ballerina_service"
+                            },
+                            request_body,
+                            100000,
+                            false
+                          )
+                          request_handle:logInfo("Lua1: Done Mediation HTTP Call")
+                          request_handle:logInfo("Lua1: Mediation body: " .. mediation_body)
+
+                          local content_length = request_handle:body():setBytes(mediation_body)
+                          request_handle:headers():replace("content-length", content_length)
+                          
+                          for key, value in mediation_headers.pairs(headers) do
+                          end
+                        end
+                        function envoy_on_response(response_handle)
+                          response_handle:logInfo("Bye Lua1")
+                        end
+                  - name: envoy.filters.http.router
+
+  clusters:
+    - name: service_httpbin
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: service_httpbin
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: httpbin.org
+                      port_value: 80
+    - name: ballerina_service
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: ballerina_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: 192.168.8.132
+                      port_value: 9090
+    - name: ballerina-backend-lua
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: ballerina-backend-lua
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: 192.168.8.132
+                      port_value: 9091
+    - name: ballerina-backend-without
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: ballerina-backend-without
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: 192.168.8.132
+                      port_value: 9092

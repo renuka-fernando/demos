@@ -39,12 +39,12 @@ static_resources:
                             prefix: "/"
                           route:
                             timeout: 100000s
-                            cluster: service_httpbin
+                            cluster: ballerina-backend-service
                         - match:
                             prefix: "/without"
                           route:
                             timeout: 100000s
-                            cluster: ballerina-backend-without
+                            cluster: ballerina-backend-service
                           typed_per_filter_config:
                             envoy.filters.http.lua:
                               "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
@@ -56,14 +56,21 @@ static_resources:
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
                       inline_code: |
-                        function getActionHeaderKey(header,action)
-                            local action_len = string.len(action)
-                            if string.sub(header,1,action_len)==action then
-                                return true, string.sub(header,action_len+1,string.len(header)+1)
-                            end
-                            return false, nil
-                        end
-
+                        local json = require "lib.json"
+                        local base64 = require'lib.base64'
+                        -- json library: https://github.com/rxi/json.lua
+                        -- base64 library: https://github.com/iskolbin/lbase64
+                        
+                        -- function envoy_on_request(request_handle)
+                        --     request_handle:logInfo("Hello REQ PATH Lua1")
+                        --     for chunk in request_handle:bodyChunks() do
+                        --       -- Clears each received chunk.
+                        --       request_handle:logInfo("RENUKA REQ bodyChunks")
+                        --       request_handle:logInfo("REQ chunk length:" .. chunk:length())
+                        --       request_handle:logInfo(chunk:getBytes(0, chunk:length()))
+                        --     end
+                        -- end
+                        
                         function envoy_on_request(request_handle)
                             request_handle:logInfo("Hello Lua1")
                             local request_headers = request_handle:headers()
@@ -73,68 +80,60 @@ static_resources:
                                 request_headers_table[key] = value
                             end
                             local request_body = request_handle:body():getBytes(0, request_handle:body():length())
-
+                        
                             request_handle:logInfo("Lua1 Request Body: " .. request_body)
-
-                            local x_wso2_context_key = "x-wso2-context"
-                            request_headers_table[x_wso2_context_key .. "-method"] = request_headers_table[":method"]
-                            request_headers_table[x_wso2_context_key .. "-path"] = request_headers_table[":path"]
-                            request_headers_table[":method"] = "POST"
-                            request_headers_table[":path"] = "/handlerequest"
-
-                            local mediation_headers, mediation_body = request_handle:httpCall(
-                                "ballerina_service",
-                                request_headers_table,
-                                request_body,
+                        
+                            local mediation_request_body = {
+                                headers=request_headers_table,
+                                body=base64.encode(request_body)
+                            }
+                        
+                            local _, mediation_response_body_str = request_handle:httpCall(
+                                "mediation_service",
+                                {
+                                    [":method"] = "POST",
+                                    [":path"] = "/handlerequest",
+                                    [":authority"] = "mediation_service",
+                                    ["content-type"] = "application/json",
+                                    -- ["Transfer-Encoding"] = "chunked",
+                                    -- ["Expect"] = "100-continue",
+                                },
+                                json.encode(mediation_request_body),
                                 100000,
                                 false
                             )
                             request_handle:logInfo("Lua1: Done Mediation HTTP Call")
-                            request_handle:logInfo("Lua1: Mediation body: " .. mediation_body)
-
-                            local content_length = request_handle:body():setBytes(mediation_body)
+                            request_handle:logInfo("Lua1: Mediation body: " .. mediation_response_body_str)
+                        
+                            local mediation_response_body = json.decode(mediation_response_body_str)
+                            local content_length = request_handle:body():setBytes(base64.decode(mediation_response_body.body))
                             request_handle:headers():replace("content-length", content_length)
-
-                            local x_add = "x-wso2-add-"
-                            local x_remove = "x-wso2-remove-"
-
-                            local actions = {
-                                ["x-wso2-add-"] = function (k,v)
-                                  request_handle:headers():add(k,v)
-                              end,
-                                ["x-wso2-remove-"] = function (k,v)
-                                  request_handle:headers():remove(k)
-                              end,
-                            }
-                            
-                            for k, v in pairs(mediation_headers) do
-                                for act_str, act in pairs(actions) do
-                                    local action_len = string.len(act_str)
-                                    local is_action, updated_key = getActionHeaderKey(k, act_str)
-                                    if is_action then
-                                      act(updated_key,v)
-                                      break
-                                    end
-                                end
-
-                                -- local is_action, updated_key = getActionHeaderKey(k, x_add)
-                                -- if is_action then
-                                --     request_handle:headers():add(updated_key,v)
-                                -- else
-                                --     is_action, updated_key = getActionHeaderKey(k, x_remove)
-                                --     if is_action then
-                                --         request_handle:headers():remove(updated_key)
-                                --     end
-                                -- end
+                        
+                            for key, val in pairs(mediation_response_body.headersToAdd) do
+                                request_handle:headers():add(key, val)
                             end
-                        end
+                            for key, val in pairs(mediation_response_body.headersToReplace) do
+                                request_handle:headers():replace(key, val)
+                            end
 
+                            request_handle:headers():replace("content-length", content_length)
+                            
+                        end
+                        
                         function envoy_on_response(response_handle)
-                            response_handle:logInfo("Bye Lua1")
+                            -- Sets the content-length.
+                          response_handle:headers():replace("content-length", 28)
+                          response_handle:headers():replace("content-type", "text/html")
+                        
+                          for chunk in response_handle:bodyChunks() do
+                            -- Clears each received chunk.
+                            response_handle:logInfo("RENUKA bodyChunks")
+                            response_handle:logInfo(chunk:getBytes(0, chunk:length()))
+                          end
                         end
-
-
-
+                      
+                      
+                      
                   - name: envoy.filters.http.router
 
   clusters:
@@ -152,13 +151,13 @@ static_resources:
                     socket_address:
                       address: httpbin.org
                       port_value: 80
-    - name: ballerina_service
+    - name: mediation_service
       connect_timeout: 200s
       type: LOGICAL_DNS
       dns_lookup_family: V4_ONLY
       lb_policy: ROUND_ROBIN
       load_assignment:
-        cluster_name: ballerina_service
+        cluster_name: mediation_service
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -174,6 +173,20 @@ static_resources:
           common_tls_context:
             validation_context_sds_secret_config:
               name: mediation_ca_cert
+    - name: ballerina-backend-service
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: ballerina-backend-service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: 192.168.8.132
+                      port_value: 9080
     - name: ballerina-backend-lua
       connect_timeout: 200s
       type: LOGICAL_DNS

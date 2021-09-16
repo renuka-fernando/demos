@@ -3,6 +3,7 @@ import ballerina/io;
 import ballerina/lang.array;
 import ballerina/xmldata;
 import ballerina/lang.value;
+import ballerina/log;
 // import ballerina/lang.runtime;
 
 listener http:Listener securedEP = new(9090,
@@ -16,33 +17,41 @@ listener http:Listener securedEP = new(9090,
 
 service / on securedEP {
     resource function post handlerequest(http:Caller caller, http:Request request) returns error? {
-        io:println("backend is called");
+        io:println("mediation service is called");
         
         foreach string key in request.getHeaderNames() {
             string val = check request.getHeader(key);
             io:println(`Headers: ${key} -> ${val}`);
         }
 
-        string payload = check request.getTextPayload();
-        io:println("received payload: " + payload);
+        // Testing purpose only ----------------------------------------------
+        // stream<byte[], io:Error?> streamer = check request.getByteStream();
+        // io:Error? forEach = streamer.forEach(function (byte[] bodyBytes) {
+        //     io:println("Receiving body bytes ------------------------------------------------");
+        //     int min = 10;
+        //     if bodyBytes.length() < min {
+        //         min = bodyBytes.length();
+        //     }
+        //     io:println('string:fromBytes(bodyBytes.slice(0, min)));
+        // });
+        // check streamer.close();
+        // Testing purpose only ----------------------------------------------
 
-        json payloadJson = check value:fromJsonString(payload);
+        io:println("Received payload:");
+        json payloadJson = check request.getJsonPayload();
+        // io:println(payloadJson);
         json bodyBase64Json = check payloadJson.body;
-        byte[] bodyBytes = check array:fromBase64(bodyBase64Json.toString());
-        string bodyStr = check 'string:fromBytes(bodyBytes);
-        json bodyJson = check value:fromJsonString(bodyStr);
-
-        io:println("Decoded Payload.Body");
-        io:println(bodyJson);
-        
-        xml? xmlData = check xmldata:fromJson(bodyJson);
-        io:println("xmlData:");
-        io:println(xmlData);
+        xml?|error xmlData = convertJsonToXml(bodyBase64Json);
 
         string respBody;
         if xmlData is xml {
+            io:println("xmlData:");
+            // io:println(xmlData);
             respBody = xmlData.toString();
         } else {
+            if xmlData is error {
+                log:printError("Error while converting to XML", xmlData);
+            }
             respBody = "<hello>ERROR</hello>";
         }
 
@@ -69,4 +78,13 @@ service / on securedEP {
         io:println("received payload: " + payload);
         return "{\"name\": \"Alice\"}";
     }
+}
+
+function convertJsonToXml(json jsonVal) returns xml?|error {
+    byte[] bodyBytes = check array:fromBase64(jsonVal.toString());
+    string bodyStr = check 'string:fromBytes(bodyBytes);
+    json bodyJson = check value:fromJsonString(bodyStr);
+
+    xml? xmlData = check xmldata:fromJson(bodyJson);
+    return xmlData;
 }

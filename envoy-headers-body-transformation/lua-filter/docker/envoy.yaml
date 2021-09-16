@@ -21,6 +21,7 @@ static_resources:
         socket_address:
           address: 0.0.0.0
           port_value: 8080
+      per_connection_buffer_limit_bytes: 40000000
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
@@ -62,13 +63,41 @@ static_resources:
                         -- base64 library: https://github.com/iskolbin/lbase64
                         
                         -- function envoy_on_request(request_handle)
+                        --     local body = ""
                         --     request_handle:logInfo("Hello REQ PATH Lua1")
                         --     for chunk in request_handle:bodyChunks() do
+                        --       os.execute("sleep 1")
                         --       -- Clears each received chunk.
-                        --       request_handle:logInfo("RENUKA REQ bodyChunks")
+                        --       request_handle:logInfo("REQ bodyChunks")
                         --       request_handle:logInfo("REQ chunk length:" .. chunk:length())
-                        --       request_handle:logInfo(chunk:getBytes(0, chunk:length()))
+                        --       request_handle:logInfo(chunk:getBytes(0, math.min(10, chunk:length())))
+                        --       -- body = body .. chunk:getBytes(0, chunk:length())
                         --     end
+                        --     request_handle:logInfo("Sedning Request chunks completed")
+                        --     -- os.execute("sleep 5")
+                        --     -- request_handle:logInfo("Concat body: " .. body)
+                        -- end
+
+                        -- function envoy_on_request(request_handle)
+                        --     request_handle:logInfo("Hello REQ PATH Lua1")
+                        --     request_handle:logInfo("Body Len: " .. request_handle:body():length())
+                        --     local request_body = request_handle:body():getBytes(0, request_handle:body():length())
+                        --     request_handle:logInfo("Lua1 Request Body: " .. request_body)
+
+                        --     local _, mediation_response_body_str = request_handle:httpCall(
+                        --     "mediation_service",
+                        --     {
+                        --         [":method"] = "POST",
+                        --         [":path"] = "/handlerequest",
+                        --         [":authority"] = "mediation_service",
+                        --         ["content-type"] = "application/json",
+                        --         -- ["Transfer-Encoding"] = "chunked",
+                        --         -- ["Expect"] = "100-continue",
+                        --     },
+                        --     request_body,
+                        --     100000,
+                        --     false
+                        -- )
                         -- end
                         
                         function envoy_on_request(request_handle)
@@ -81,7 +110,7 @@ static_resources:
                             end
                             local request_body = request_handle:body():getBytes(0, request_handle:body():length())
                         
-                            request_handle:logInfo("Lua1 Request Body: " .. request_body)
+                            -- request_handle:logInfo("Lua1 Request Body: " .. request_body)
                         
                             local mediation_request_body = {
                                 headers=request_headers_table,
@@ -103,7 +132,7 @@ static_resources:
                                 false
                             )
                             request_handle:logInfo("Lua1: Done Mediation HTTP Call")
-                            request_handle:logInfo("Lua1: Mediation body: " .. mediation_response_body_str)
+                            -- request_handle:logInfo("Lua1: Mediation body: " .. mediation_response_body_str)
                         
                             local mediation_response_body = json.decode(mediation_response_body_str)
                             local content_length = request_handle:body():setBytes(base64.decode(mediation_response_body.body))
@@ -121,18 +150,12 @@ static_resources:
                         end
                         
                         function envoy_on_response(response_handle)
-                            -- Sets the content-length.
-                          response_handle:headers():replace("content-length", 28)
-                          response_handle:headers():replace("content-type", "text/html")
-                        
                           for chunk in response_handle:bodyChunks() do
                             -- Clears each received chunk.
-                            response_handle:logInfo("RENUKA bodyChunks")
+                            response_handle:logInfo("Response bodyChunks")
                             response_handle:logInfo(chunk:getBytes(0, chunk:length()))
                           end
                         end
-                      
-                      
                       
                   - name: envoy.filters.http.router
 

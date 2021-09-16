@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CA_DOMAIN=mediation-service-host
+CA_DOMAIN=mediation-service
 
 mkdir certs
 cd certs

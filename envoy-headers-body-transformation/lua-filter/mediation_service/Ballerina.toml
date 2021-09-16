@@ -1,0 +1,3 @@
+[build-options]
+cloud = "docker"
+observabilityIncluded = true

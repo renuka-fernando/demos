@@ -4,40 +4,46 @@ import ballerina/lang.array;
 import ballerina/xmldata;
 import ballerina/lang.value;
 import ballerina/log;
+import ballerina/mime;
+
 // import ballerina/lang.runtime;
 
-listener http:Listener securedEP = new(9090,
+listener http:Listener ep = new (9090, 
     secureSocket = {
-        key: {
-            certFile: "certs/ca.crt",
-            keyFile: "certs/ca.key"
-        }
+    key: {
+        certFile: "certs/ca.crt",
+        keyFile: "certs/ca.key"
     }
+}
 );
 
-service / on securedEP {
+service / on ep {
+    resource function post handlerequest_chunks(http:Caller caller, http:Request request) returns error? {
+        stream<byte[], io:Error?> streamer = check request.getByteStream();
+        io:Error? forEach = streamer.forEach(function(byte[] bodyBytes) {
+            io:println("Receiving body bytes ------------------------------------------------");
+            int min = 10;
+            if bodyBytes.length() < min {
+                min = bodyBytes.length();
+            }
+            io:println('string:fromBytes(bodyBytes.slice(0, min)));
+        });
+        check streamer.close();
+        http:Response resp = new;
+        resp.setPayload("DONE chunking");
+        check caller->respond(resp);
+    }
+
     resource function post handlerequest(http:Caller caller, http:Request request) returns error? {
         io:println("mediation service is called");
-        
+
+        // print headers
         foreach string key in request.getHeaderNames() {
             string val = check request.getHeader(key);
             io:println(`Headers: ${key} -> ${val}`);
         }
 
-        // Testing purpose only ----------------------------------------------
-        // stream<byte[], io:Error?> streamer = check request.getByteStream();
-        // io:Error? forEach = streamer.forEach(function (byte[] bodyBytes) {
-        //     io:println("Receiving body bytes ------------------------------------------------");
-        //     int min = 10;
-        //     if bodyBytes.length() < min {
-        //         min = bodyBytes.length();
-        //     }
-        //     io:println('string:fromBytes(bodyBytes.slice(0, min)));
-        // });
-        // check streamer.close();
-        // Testing purpose only ----------------------------------------------
-
-        io:println("Received payload:");
+        // io:println("Received payload:");
         json payloadJson = check request.getJsonPayload();
         // io:println(payloadJson);
         json bodyBase64Json = check payloadJson.body;
@@ -45,7 +51,7 @@ service / on securedEP {
 
         string respBody;
         if xmlData is xml {
-            io:println("xmlData:");
+            // io:println("xmlData:");
             // io:println(xmlData);
             respBody = xmlData.toString();
         } else {
@@ -65,19 +71,29 @@ service / on securedEP {
                 "content-type": "application/xml"
             }
         };
-        
-        http:Response resp = new;
-        resp.setPayload(respPayload.toJsonString());
-        
-        check caller->respond(resp);
-   }
 
-    resource function post req(@http:Payload string payload) returns string {
-        io:println("backend is called");
-        // runtime:sleep(30);
-        io:println("received payload: " + payload);
-        return "{\"name\": \"Alice\"}";
+        http:Response resp = new;
+        resp.setJsonPayload(respPayload);
+        check caller->respond(resp);
     }
+
+    resource function post multipart(http:Request request) returns http:Response|http:InternalServerError {
+        http:Response response = new;
+        // [Extracts bodyparts](https://docs.central.ballerina.io/ballerina/http/latest/classes/Request#getBodyParts) from the request.
+        var bodyParts = request.getBodyParts();
+
+        if (bodyParts is mime:Entity[]) {
+            foreach var part in bodyParts {
+                handleContent(part);
+            }
+            response.setPayload(bodyParts);
+            return response;
+        } else {
+            log:printError(bodyParts.message());
+            return {body: "Error in decoding multiparts!"};
+        }
+    }
+
 }
 
 function convertJsonToXml(json jsonVal) returns xml?|error {

@@ -26,7 +26,8 @@ service / on ep {
         }
 
         string payload = check request.getTextPayload();
-        io:println("received payload: " + payload);
+        io:println("Received Payload");
+        io:println(payload);
 
         http:Response resp = new;
         resp.setPayload("hello from ballerina backend");
@@ -83,12 +84,5 @@ service / on ep {
         if (result is error) {
             log:printError("Error sending response", result);
         }
-    }
-
-    resource function post req(@http:Payload string payload) returns string {
-        io:println("backend is called");
-        // runtime:sleep(30);
-        io:println("received payload: " + payload);
-        return "{\"name\": \"Alice\"}";
     }
 }

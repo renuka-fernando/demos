@@ -1,0 +1,4 @@
+[container.image]
+repository="renukafernando"
+name="mediation-service"
+tag="v1.0.0"

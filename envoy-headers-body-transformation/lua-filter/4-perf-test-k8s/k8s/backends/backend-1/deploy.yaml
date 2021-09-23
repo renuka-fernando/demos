@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    choreo.component: backend-1
+  name: backend-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      choreo.component: backend-1
+  template:
+    metadata:
+      labels:
+        choreo.component: backend-1
+    spec:
+      containers:
+      - image: vajiraprabuddhaka/netty-http-echo-service
+        name: backend-1
+        ports:
+        - containerPort: 8688
+          name: http-port
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi

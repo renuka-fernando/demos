@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    choreo.component: enovyproxy
+  name: enovyproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      choreo.component: enovyproxy
+  template:
+    metadata:
+      labels:
+        choreo.component: enovyproxy
+    spec:
+      containers:
+      - image: envoyproxy/envoy:v1.19.0
+        name: enovyproxy
+        ports:
+        - containerPort: 8080
+          name: http-port
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi
+        volumeMounts:
+        - mountPath: /etc/envoy/envoy.yaml
+          name: config
+          subPath: envoy.yaml
+        - mountPath: /lib/base64.lua
+          name: lua-libs
+          subPath: base64.lua
+        - mountPath: /lib/json.lua
+          name: lua-libs
+          subPath: json.lua
+      volumes:
+      - name: config
+        configMap:
+          name: enovy-yaml
+      - name: lua-libs
+        configMap:
+          name: lua-libs

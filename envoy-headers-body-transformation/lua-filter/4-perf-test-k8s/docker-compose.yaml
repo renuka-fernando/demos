@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  # Envoy Proxy
+  envoy:
+    image: envoyproxy/envoy:v1.19.0
+    command: -c /etc/envoy/envoy.yaml
+    # command: -c /etc/envoy/envoy.yaml --component-log-level conn_handler:trace,connection:trace,client:trace
+    volumes:
+      - ./k8s/envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./k8s/envoy/lib/json.lua:/lib/json.lua
+      - ./k8s/envoy/lib/base64.lua:/lib/base64.lua
+    ports:
+      - 8080:8080
+      - 9000:9000
+  backend-1:
+    image: vajiraprabuddhaka/netty-http-echo-service
+    ports:
+      - 8688:8688
+  backend-2:
+    image: vajiraprabuddhaka/netty-http-echo-service
+    ports:
+      - 8689:8688

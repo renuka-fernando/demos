@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    choreo.component: ext-bal-service
+  name: ext-bal-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      choreo.component: ext-bal-service
+  template:
+    metadata:
+      labels:
+        choreo.component: ext-bal-service
+    spec:
+      containers:
+      - image: renukafernando/bal-svc-30-delay:v1
+        name: ext-bal-service
+        ports:
+        - containerPort: 9090
+          name: http-port
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi

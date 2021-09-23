@@ -1,5 +1,6 @@
 namespace: envoy
 resources:
+  - namespace.yaml
   - envoy
   - ext-service
   - backends

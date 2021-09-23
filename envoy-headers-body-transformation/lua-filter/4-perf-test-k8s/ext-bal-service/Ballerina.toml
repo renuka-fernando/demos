@@ -1,2 +1,7 @@
+[package]
+org = "renuka"
+name = "ext_bal_service"
+version = "1.0.0"
+
 [build-options]
 observabilityIncluded = true

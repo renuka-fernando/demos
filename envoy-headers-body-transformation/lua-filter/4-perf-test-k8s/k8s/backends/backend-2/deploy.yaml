@@ -15,7 +15,7 @@ spec:
         choreo.component: backend-2
     spec:
       containers:
-      - image: vajiraprabuddhaka/netty-http-echo-service
+      - image: renukafernando/netty-http-echo-service:v1
         name: backend-2
         ports:
         - containerPort: 8688

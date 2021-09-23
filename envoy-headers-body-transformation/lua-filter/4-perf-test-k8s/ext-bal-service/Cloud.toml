@@ -2,3 +2,4 @@
 repository="renukafernando"
 name="ext-bal-service"
 tag="v1.0.0"
+cmd="CMD java -Xdiag -Xmx2g -cp '${APP}:jars/*' 'renuka/ext_bal_service/1_0_0/$_init'"

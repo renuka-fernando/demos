@@ -8,8 +8,13 @@ bal build --offline --cloud=docker ext-bal-service
 
 ## 2. K8s cluster
 ```sh
-kubectl create ns envoy
 kubectl apply -k k8s
+```
+
+OR
+
+```sh
+kustomize build k8s | k apply -f -
 ```
 
 ## 3. Test in Local

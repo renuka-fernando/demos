@@ -41,5 +41,12 @@ curl http://localhost:8080/lua \
 Update file path for request json objecj and the summery CSV file.
 
 ```sh
+jmeter -n -t jmeter-script-1.jmx
+jmeter -n -t jmeter-script-2.jmx
 jmeter -n -t jmeter-script-1.jmx & jmeter -n -t jmeter-script-2.jmx
 ```
+
+For google cloud dir
+source ~/envoy-lua-perf/source.sh
+source ~/envoy/sources.sh
+cd ~/envoy-lua-perf/demos/envoy-headers-body-transformation/lua-filter/4-perf-test-k8s

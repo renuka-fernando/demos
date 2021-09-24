@@ -35,3 +35,11 @@ curl http://localhost:8080/lua \
     -H "replace-this: wrong_value" \
     -d @../sample-payloads/sample.json
 ```
+
+## 5. Jmeter Script
+
+Update file path for request json objecj and the summery CSV file.
+
+```sh
+jmeter -n -t jmeter-script-1.jmx & jmeter -n -t jmeter-script-2.jmx
+```

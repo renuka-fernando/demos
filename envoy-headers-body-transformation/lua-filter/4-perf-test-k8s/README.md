@@ -36,18 +36,34 @@ kustomize build k8s | k apply -f -
 
 Update file path for request json object and the summery CSV file.
 
-script-1: -> /lua
-script-1: -> /without
-
 ```sh
 EXTERNAL_IP=<EXTERNAL_IP>
+PATH=/lua
+DURATION=1200
 
 jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
-    -JPath=/lua -JDuration=600 -JThreads=50 \
+    -JPath=${PATH} -JDuration=${DURATION} -JThreads=50 \
     -JSummaryCSV=~/jmeter-results/lua-summary.csv \
-    -JPayload=/home/renuka/envoy-lua-perf/10485760B.json
-jmeter -n -t jmeter-script-2.jmx
-jmeter -n -t jmeter-script-1.jmx & jmeter -n -t jmeter-script-2.jmx
+    -JPayload=/home/renuka/10485760B.json
+```
+```sh
+PATH=/without
+jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+    -JPath=${PATH} -JDuration=${DURATION} -JThreads=50 \
+    -JSummaryCSV=~/jmeter-results/lua-summary.csv \
+    -JPayload=/home/renuka/10485760B.json
+```
+```sh
+PATH1=/lua
+PATH2=/without
+jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+    -JPath=${PATH1} -JDuration=${DURATION} -JThreads=50 \
+    -JSummaryCSV=~/jmeter-results/lua-summary.csv \
+    -JPayload=/home/renuka/10485760B.json & \
+jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+    -JPath=${PATH2} -JDuration=${DURATION} -JThreads=50 \
+    -JSummaryCSV=~/jmeter-results/lua-summary.csv \
+    -JPayload=/home/renuka/10485760B.json & \
 ```
 
 ## 3. Test in Local

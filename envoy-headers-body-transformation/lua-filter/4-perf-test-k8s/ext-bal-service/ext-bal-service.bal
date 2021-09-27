@@ -25,4 +25,13 @@ service / on ep {
         resp.setJsonPayload(respPayload);
         check caller->respond(resp);
     }
+
+    resource function post handlerequest\-simple(http:Caller caller, http:Request request) returns error? {
+        log:printInfo("mediation service (simple) is called");
+        string payloadTxt = check request.getTextPayload();
+
+        http:Response resp = new;
+        resp.setTextPayload(payloadTxt);
+        check caller->respond(resp);
+    }
 }

@@ -45,6 +45,15 @@ static_resources:
                   envoy.filters.http.lua:
                     "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
                     disabled: true
+              - match:
+                  prefix: "/lua-simple"
+                route:
+                  timeout: 100000s
+                  cluster: backend_2
+                typed_per_filter_config:
+                  envoy.filters.http.lua:
+                    "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                    name: simple.lua
           http_filters:
           - name: envoy.filters.http.lua1
             typed_config:
@@ -55,7 +64,6 @@ static_resources:
                 -- json library: https://github.com/rxi/json.lua
                 -- base64 library: https://github.com/iskolbin/lbase64
 
-                -- JSON to XML convertion
                 function envoy_on_request(request_handle)
                     request_handle:logInfo("Hello Lua1")
                     local request_headers = request_handle:headers()
@@ -76,7 +84,7 @@ static_resources:
                         "ext_bal_service",
                         {
                             [":method"] = "POST",
-                            [":path"] = "/handlerequest",
+                            [":path"] = "/handlerequest-simple",
                             [":authority"] = "ext_bal_service",
                             ["content-type"] = "application/json",
                         },
@@ -88,7 +96,7 @@ static_resources:
                     -- request_handle:logInfo("Lua1: Mediation body: " .. mediation_response_body_str)
 
                     for key, value in pairs(mediation_headers) do
-                        request_handle:logInfo("Lua1 Request Headers: " .. key .. "->" .. value)
+                        request_handle:logInfo("Lua1 Mediation Headers: " .. key .. "->" .. value)
                         request_headers_table[key] = value
                     end
 
@@ -104,22 +112,77 @@ static_resources:
                     local content_length = request_handle:body():setBytes(base64.decode(mediation_response_body.body))
                     request_handle:headers():replace("content-length", content_length)
 
-                    for key, val in pairs(mediation_response_body.headersToAdd) do
-                        request_handle:headers():add(key, val)
-                    end
+                    -- for key, val in pairs(mediation_response_body.headersToAdd) do
+                    --     request_handle:headers():add(key, val)
+                    -- end
 
-                    for _, key in ipairs(mediation_response_body.headersToRemove) do
-                        request_handle:headers():remove(key)
-                    end
+                    -- for _, key in ipairs(mediation_response_body.headersToRemove) do
+                    --     request_handle:headers():remove(key)
+                    -- end
 
-                    for key, val in pairs(mediation_response_body.headersToReplace) do
-                        request_handle:headers():replace(key, val)
-                    end
+                    -- for key, val in pairs(mediation_response_body.headersToReplace) do
+                    --     request_handle:headers():replace(key, val)
+                    -- end
                 end
 
                 function envoy_on_response(response_handle)
                     response_handle:logInfo("Lua: Bye")
                 end
+              source_codes:
+                simple.lua:
+                  inline_string: |
+                    function envoy_on_request(request_handle)
+                      request_handle:logInfo("Simple Lua")
+
+                      local request_headers = request_handle:headers()
+                      local request_headers_table = {}
+                      for key, value in pairs(request_headers) do
+                          request_handle:logInfo("Lua1 Request Headers: " .. key .. "->" .. value)
+                          request_headers_table[key] = value
+                      end
+                      local request_body = request_handle:body():getBytes(0, request_handle:body():length())
+                      local mediation_headers, mediation_response_body_str = request_handle:httpCall(
+                          "ext_bal_service",
+                          {
+                              [":method"] = "POST",
+                              [":path"] = "/handlerequest-simple",
+                              [":authority"] = "ext_bal_service",
+                              ["content-type"] = "application/json",
+                          },
+                          mediation_request_body,
+                          100000,
+                          false
+                      )
+                      request_handle:logInfo("Lua1: Done Mediation HTTP Call")
+
+                      for key, value in pairs(mediation_headers) do
+                          request_handle:logInfo("Lua1 Mediation Headers: " .. key .. "->" .. value)
+                          request_headers_table[key] = value
+                      end
+
+                      -- if mediation_headers[":status"] ~= "200" then
+                      --   request_handle:respond({
+                      --     [":status"] = "500",
+                      --     ["upstream_foo"] = "FOO"
+                      --   }, "nope")
+                      --   return
+                      -- end
+
+                      local content_length = request_handle:body():setBytes(mediation_response_body_str)
+                      request_handle:headers():replace("content-length", content_length)
+
+                      -- for key, val in pairs(mediation_response_body.headersToAdd) do
+                      --     request_handle:headers():add(key, val)
+                      -- end
+
+                      -- for _, key in ipairs(mediation_response_body.headersToRemove) do
+                      --     request_handle:headers():remove(key)
+                      -- end
+
+                      -- for key, val in pairs(mediation_response_body.headersToReplace) do
+                      --     request_handle:headers():replace(key, val)
+                      -- end
+                    end
           - name: envoy.filters.http.router
 
 

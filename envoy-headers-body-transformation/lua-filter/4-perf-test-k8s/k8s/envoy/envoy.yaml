@@ -72,7 +72,7 @@ static_resources:
                         body=base64.encode(request_body)
                     }
 
-                    local _, mediation_response_body_str = request_handle:httpCall(
+                    local mediation_headers, mediation_response_body_str = request_handle:httpCall(
                         "ext_bal_service",
                         {
                             [":method"] = "POST",
@@ -86,6 +86,19 @@ static_resources:
                     )
                     request_handle:logInfo("Lua1: Done Mediation HTTP Call")
                     -- request_handle:logInfo("Lua1: Mediation body: " .. mediation_response_body_str)
+
+                    for key, value in pairs(mediation_headers) do
+                        request_handle:logInfo("Lua1 Request Headers: " .. key .. "->" .. value)
+                        request_headers_table[key] = value
+                    end
+
+                    -- if mediation_headers[":status"] ~= "200" then
+                    --   request_handle:respond({
+                    --     [":status"] = "500",
+                    --     ["upstream_foo"] = "FOO"
+                    --   }, "nope")
+                    --   return
+                    -- end
 
                     local mediation_response_body = json.decode(mediation_response_body_str)
                     local content_length = request_handle:body():setBytes(base64.decode(mediation_response_body.body))
@@ -105,7 +118,7 @@ static_resources:
                 end
 
                 function envoy_on_response(response_handle)
-                    response_handle:logInfo("Global Lua: Bye")
+                    response_handle:logInfo("Lua: Bye")
                 end
           - name: envoy.filters.http.router
 

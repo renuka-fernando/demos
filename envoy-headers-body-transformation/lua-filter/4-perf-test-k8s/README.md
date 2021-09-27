@@ -40,7 +40,12 @@ script-1: -> /lua
 script-1: -> /without
 
 ```sh
-jmeter -n -t jmeter-script-1.jmx
+EXTERNAL_IP=<EXTERNAL_IP>
+
+jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+    -JPath=/lua -JDuration=600 -JThreads=50 \
+    -JSummaryCSV=~/jmeter-results/lua-summary.csv \
+    -JPayload=/home/renuka/envoy-lua-perf/10485760B.json
 jmeter -n -t jmeter-script-2.jmx
 jmeter -n -t jmeter-script-1.jmx & jmeter -n -t jmeter-script-2.jmx
 ```

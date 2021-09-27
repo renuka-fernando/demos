@@ -18,10 +18,10 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(Threads, 50)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">1800</stringProp>
+        <stringProp name="ThreadGroup.duration">${__P(Duration, 300)}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
@@ -32,16 +32,16 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${__FileToString(/home/renuka/envoy-lua-perf/demos/envoy-headers-body-transformation/lua-filter/sample-payloads/sample.json,,)}</stringProp>
+                <stringProp name="Argument.value">${__FileToString(${__P(Payload, /home/renuka/envoy-lua-perf/10485760B.json)},,)}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">35.232.143.95</stringProp>
-          <stringProp name="HTTPSampler.port">80</stringProp>
+          <stringProp name="HTTPSampler.domain">${__P(ExternalIP)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(Port, 80)}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/lua</stringProp>
+          <stringProp name="HTTPSampler.path">${__P(Path, /lua)}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -86,7 +86,7 @@
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">/home/renuka/jmeter-results/lua-summary.csv</stringProp>
+          <stringProp name="filename">${__P(SummaryCSV, ~/jmeter-results/lua-summary.csv)}</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>

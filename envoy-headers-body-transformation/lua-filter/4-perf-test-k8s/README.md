@@ -1,12 +1,27 @@
 # K8s Deployment
 
-## 1. Build Ext-Service
+## 1. Setup Jmeter
 
 ```sh
-bal build --offline --cloud=docker ext-bal-service
+mkdir envoy-lua-perf
+cd envoy-lua-perf
+wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.4.1.tgz
+tar -xzf apache-jmeter-5.4.1.tgz
+rm apache-jmeter-5.4.1.tgz
+
+cat  << EOF > source.sh
+export PATH=$PATH:~/envoy-lua-perf/apache-jmeter-5.4.1/bin
+EOF
+```
+
+```sh
+source ~/envoy-lua-perf/source.sh
+JVM_ARGS="-Xms4g -Xmx4g"
+export JVM_ARGS
 ```
 
 ## 2. K8s cluster
+
 ```sh
 kubectl apply -k k8s
 ```
@@ -17,7 +32,28 @@ OR
 kustomize build k8s | k apply -f -
 ```
 
+## 3. Jmeter Script
+
+Update file path for request json object and the summery CSV file.
+
+script-1: -> /lua
+script-1: -> /without
+
+```sh
+jmeter -n -t jmeter-script-1.jmx
+jmeter -n -t jmeter-script-2.jmx
+jmeter -n -t jmeter-script-1.jmx & jmeter -n -t jmeter-script-2.jmx
+```
+
 ## 3. Test in Local
+
+### 3.1. Build Ext-Service
+
+```sh
+bal build --offline --cloud=docker ext-bal-service
+```
+
+### 3.2. Run the Setup
 
 ```sh
 bal run --offline ext-bal-service
@@ -27,7 +63,7 @@ bal run --offline ext-bal-service
 docker compose up
 ```
 
-## 4. Invoke
+### 3.2. Invoke
 ```sh
 curl http://localhost:8080/lua \
     -H "content-type: application/json" \
@@ -36,17 +72,8 @@ curl http://localhost:8080/lua \
     -d @../sample-payloads/sample.json
 ```
 
-## 5. Jmeter Script
 
-Update file path for request json objecj and the summery CSV file.
+## G Cloud Setup
 
-```sh
-jmeter -n -t jmeter-script-1.jmx
-jmeter -n -t jmeter-script-2.jmx
-jmeter -n -t jmeter-script-1.jmx & jmeter -n -t jmeter-script-2.jmx
-```
-
-For google cloud dir
-source ~/envoy-lua-perf/source.sh
-source ~/envoy/sources.sh
 cd ~/envoy-lua-perf/demos/envoy-headers-body-transformation/lua-filter/4-perf-test-k8s
+gcloud compute copy-files gke-apim-garner-demo-default-pool-bd8cde6f-1o6j:foo.txt foo.txt --zone=us-central1-c --project "apim-kube"

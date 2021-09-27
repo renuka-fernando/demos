@@ -15,7 +15,7 @@ spec:
         choreo.component: ext-bal-service
     spec:
       containers:
-      - image: renukafernando/ext-bal-service:v1.0.1
+      - image: renukafernando/ext-bal-service:v1.0.2
         name: ext-bal-service
         ports:
         - containerPort: 9090

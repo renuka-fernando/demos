@@ -5,7 +5,7 @@ metadata:
     choreo.component: ext-bal-service
   name: ext-bal-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       choreo.component: ext-bal-service

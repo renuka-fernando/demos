@@ -38,29 +38,31 @@ Update file path for request json object and the summery CSV file.
 
 ```sh
 EXTERNAL_IP=<EXTERNAL_IP>
-PATH=/lua
 DURATION=1200
+```
 
-jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
-    -JPath=${PATH} -JDuration=${DURATION} -JThreads=50 \
+```sh
+RES_PATH=/lua
+jmeter -n -t jmeter-script.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+    -JPath=${RES_PATH} -JDuration=${DURATION} -JThreads=50 \
     -JSummaryCSV=~/jmeter-results/lua-summary.csv \
     -JPayload=/home/renuka/10485760B.json
 ```
 ```sh
-PATH=/without
-jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
-    -JPath=${PATH} -JDuration=${DURATION} -JThreads=50 \
+RES_PATH=/without
+jmeter -n -t jmeter-script.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+    -JPath=${RES_PATH} -JDuration=${DURATION} -JThreads=50 \
     -JSummaryCSV=~/jmeter-results/lua-summary.csv \
     -JPayload=/home/renuka/10485760B.json
 ```
 ```sh
 PATH1=/lua
 PATH2=/without
-jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+jmeter -n -t jmeter-script.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
     -JPath=${PATH1} -JDuration=${DURATION} -JThreads=50 \
     -JSummaryCSV=~/jmeter-results/lua-summary.csv \
     -JPayload=/home/renuka/10485760B.json & \
-jmeter -n -t jmeter-script-1.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
+jmeter -n -t jmeter-script.jmx -JExternalIP=${EXTERNAL_IP} -JPort=80 \
     -JPath=${PATH2} -JDuration=${DURATION} -JThreads=50 \
     -JSummaryCSV=~/jmeter-results/lua-summary.csv \
     -JPayload=/home/renuka/10485760B.json & \

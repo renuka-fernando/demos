@@ -1,0 +1,107 @@
+admin:
+  access_log_path: /dev/null
+  address:
+    socket_address:
+      address: 127.0.0.1
+      port_value: 9000
+
+node:
+  cluster: service_greeter
+  id: test-id
+
+static_resources:
+  listeners:
+    - name: http_listener
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8080
+      per_connection_buffer_limit_bytes: 40000000
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: local_service
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/transform"
+                          route:
+                            timeout: 100000s
+                            cluster: ballerina_backend_service
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              name: transform.lua
+                        - match:
+                            prefix: "/without"
+                          route:
+                            timeout: 100000s
+                            cluster: ballerina_backend_service
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              disabled: true
+                        - match:
+                            prefix: "/bla"
+                          route:
+                            timeout: 100000s
+                            cluster: ballerina_backend_service
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              disabled: true
+                http_filters:
+                  - name: envoy.filters.http.lua.mediation
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+                      inline_code: |
+                        function envoy_on_request(request_handle)
+                          request_handle:logInfo("Global Lua: Hello")
+                        end
+
+                        function envoy_on_response(response_handle)
+                          response_handle:logInfo("Global Lua: Bye")
+                        end
+                      source_codes:
+                        transform.lua:
+                          filename: /etc/lua/transform.lua
+
+                  - name: envoy.filters.http.router
+
+  clusters:
+    - name: ballerina_backend_service
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: ballerina_backend_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: host.docker.internal
+                      port_value: 9080
+    - name: mediation-service
+      connect_timeout: 200s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: mediation-service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: host.docker.internal
+                      port_value: 9090

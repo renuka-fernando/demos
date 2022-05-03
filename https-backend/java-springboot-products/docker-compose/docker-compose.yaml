@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  # Backend HTTPS
+  products_https_service:
+    image: renukafernando/products-https:v1.0.2
+    ports:
+      - 8443:8443
+    volumes:
+      - ./certs/products-https:/certs
+    environment:
+      - KEYSTORE_PATH=/certs/keystore.p12
+      - KEYSTORE_PASSWORD=admin1234
